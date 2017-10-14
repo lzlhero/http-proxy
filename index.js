@@ -1,7 +1,17 @@
 var http = require('http');
 var net = require('net');
+var Socks = require('socks');
 var url = require('url');
-const debug = false;
+const debug = true;
+const proxy = false;
+
+var socksProxy = {
+	ipaddress: "127.0.0.1",
+	port: 8888,
+	type: 5
+};
+
+var socksAgent = new Socks.Agent({proxy: socksProxy}, false, false);
 
 function consoleLog(...arg) {
 	if (debug) {
@@ -27,13 +37,15 @@ http.createServer()
 		auth    : info.auth,
 		method  : req.method,
 		headers : req.headers,
+		agent   : proxy ? socksAgent : null
 	};
+	// consoleLog('try proxy: ' + req.url);
 	var up = http.request(options, function(res) {
 		consoleLog('http proxy: ' + req.url);
 		down.writeHead(res.statusCode, res.headers);
 		res.pipe(down);
 	})
-	.on('error', function(e) {
+	.on('error', function(err) {
 		down.end();
 	});
 
@@ -42,14 +54,41 @@ http.createServer()
 .on('connect', function(req, down, head) {
 	// for ssl proxy tunnel.
 	var info = url.parse('http://' + req.url);
-	var up = net.connect(info.port, info.hostname, function() {
-		consoleLog('ssl proxy: ' + req.url);
-		down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
-		down.pipe(up).pipe(down);
-	})
-	.on('error', function(e) {
-		down.end();
-	});
+	// consoleLog('try proxy: ' + req.url);
+
+	if (proxy) {
+		Socks.createConnection({
+			proxy: socksProxy,
+			target: {
+				host: info.hostname,
+				port: info.port
+			},
+			timeout: 60000
+		}, function(err, up, info) {
+			if (err) {
+				consoleLog(err);
+				down.end();
+			}
+			else {
+				up.on('error', function(err) {
+					down.end();
+				});
+				consoleLog('ssl proxy: ' + req.url);
+				down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
+				down.pipe(up).pipe(down);
+			}
+		});
+	}
+	else {
+		var up = net.connect(info.port, info.hostname, function() {
+			consoleLog('ssl proxy: ' + req.url);
+			down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
+			down.pipe(up).pipe(down);
+		})
+		.on('error', function(err) {
+			down.end();
+		});
+	}
 })
 .listen(8080, '0.0.0.0',function() {
 	console.log('Listening on ' + this.address().address + ':' + this.address().port);
