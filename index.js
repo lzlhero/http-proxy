@@ -1,9 +1,14 @@
-var http = require('http');
 var net = require('net');
-var Socks = require('socks');
 var url = require('url');
-const debug = true;
-const proxy = false;
+var http = require('http');
+var socks = require('socks');
+
+const showLog = true;
+const allBySocks = false;
+
+var forceSocksHosts = [
+	"graph.facebook.com",
+];
 
 var socksProxy = {
 	ipaddress: "127.0.0.1",
@@ -11,10 +16,10 @@ var socksProxy = {
 	type: 5
 };
 
-var socksAgent = new Socks.Agent({proxy: socksProxy}, false, false);
+var socksAgent = new socks.Agent({proxy: socksProxy}, false, false);
 
 function consoleLog(...arg) {
-	if (debug) {
+	if (showLog) {
 		console.log(...arg);
 	}
 }
@@ -22,14 +27,16 @@ function consoleLog(...arg) {
 http.createServer()
 .on('request', function(req, down) {
 	var info = url.parse(req.url);
-	// for http direct request.
+
+	// for http direct request, http server response.
 	if (!info.hostname) {
 		down.writeHead(200, { 'Content-Type': 'text/plain' });
-		down.end('It is okay.');
+		down.end('Server is running.');
 		return;
 	}
 
 	// for http proxy request.
+	var isBySocks = allBySocks || forceSocksHosts.indexOf(info.hostname) != -1;
 	var options = {
 		port    : info.port || 80,
 		host    : info.hostname,
@@ -37,11 +44,13 @@ http.createServer()
 		auth    : info.auth,
 		method  : req.method,
 		headers : req.headers,
-		agent   : proxy ? socksAgent : null
+		agent   : isBySocks ? socksAgent : null
 	};
-	// consoleLog('try proxy: ' + req.url);
+
+	//consoleLog('http try: ' + req.url);
+
 	var up = http.request(options, function(res) {
-		consoleLog('http proxy: ' + req.url);
+		consoleLog((isBySocks ? 'socks ' : '') + 'http pass: ' + req.url);
 		down.writeHead(res.statusCode, res.headers);
 		res.pipe(down);
 	})
@@ -54,10 +63,12 @@ http.createServer()
 .on('connect', function(req, down, head) {
 	// for ssl proxy tunnel.
 	var info = url.parse('http://' + req.url);
-	// consoleLog('try proxy: ' + req.url);
 
-	if (proxy) {
-		Socks.createConnection({
+	//consoleLog('ssl try: ' + req.url);
+
+	var isBySocks = allBySocks || forceSocksHosts.indexOf(info.hostname) != -1;
+	if (isBySocks) {
+		socks.createConnection({
 			proxy: socksProxy,
 			target: {
 				host: info.hostname,
@@ -73,7 +84,7 @@ http.createServer()
 				up.on('error', function(err) {
 					down.end();
 				});
-				consoleLog('ssl proxy: ' + req.url);
+				consoleLog('socks ssl pass: ' + req.url);
 				down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
 				down.pipe(up).pipe(down);
 			}
@@ -81,7 +92,7 @@ http.createServer()
 	}
 	else {
 		var up = net.connect(info.port, info.hostname, function() {
-			consoleLog('ssl proxy: ' + req.url);
+			consoleLog('ssl pass: ' + req.url);
 			down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
 			down.pipe(up).pipe(down);
 		})
@@ -91,5 +102,5 @@ http.createServer()
 	}
 })
 .listen(8080, '0.0.0.0',function() {
-	console.log('Listening on ' + this.address().address + ':' + this.address().port);
+	console.log('Http(s) proxy ' + (allBySocks ? 'by socks ' : '' ) + 'listening on ' + this.address().address + ':' + this.address().port);
 });
