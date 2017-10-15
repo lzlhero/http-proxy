@@ -91,7 +91,7 @@ http.createServer()
 		});
 	}
 	else {
-		var up = net.connect(info.port, info.hostname, function() {
+		var up = net.createConnection(info.port, info.hostname, function() {
 			consoleLog('ssl pass: ' + req.url);
 			down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
 			down.pipe(up).pipe(down);
@@ -101,6 +101,6 @@ http.createServer()
 		});
 	}
 })
-.listen(8080, '0.0.0.0',function() {
+.listen(8080, '0.0.0.0', function() {
 	console.log('Http(s) proxy ' + (allBySocks ? 'by socks ' : '' ) + 'listening on ' + this.address().address + ':' + this.address().port);
 });
