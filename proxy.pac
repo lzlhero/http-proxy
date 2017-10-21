@@ -1,63 +1,76 @@
-var domains = {
-	"g.co": 1,
-	"goo.gl": 1,
-	"google.cn": 1,
-	"google.com": 1,
-	"google.com.hk": 1,
-	"gmail.com": 1,
-	"android.com": 1,
-	"chromium.org": 1,
-	"googlesource.com": 1,
-	"gstatic.com": 1,
-	"ggpht.com": 1,
-	"googleusercontent.com": 1,
-	"googlevideo.com": 1,
-	"googleapis.com": 1,
-	"appspot.com": 1,
-	"blogspot.com": 1,
-	"blogspot.jp": 1,
-	"blogger.com": 1,
-	"youtube.com": 1,
-	"youtu.be": 1,
-	"ytimg.com": 1,
-	"youtube-nocookie.com": 1,
+var list = [
+	"g.co",
+	"goo.gl",
+	"google.cn",
+	"google.com",
+	"google.com.hk",
+	"gmail.com",
+	"android.com",
+	"chromium.org",
+	"googlesource.com",
+	"gstatic.com",
+	"ggpht.com",
+	"googleusercontent.com",
+	"googlevideo.com",
+	"googleapis.com",
+	"appspot.com",
+	"blogspot.com",
+	"blogspot.jp",
+	"blogger.com",
+	"youtube.com",
+	"youtu.be",
+	"ytimg.com",
+	"youtube-nocookie.com",
 
-	"twitter.com": 1,
-	"twimg.com": 1,
-	"t.co": 1,
+	"twitter.com",
+	"twimg.com",
+	"t.co",
 
-	"facebook.com": 1,
-	"facebook.net": 1,
-	"fbcdn.net": 1,
-	"instagram.com": 1,
-	"cdninstagram.com": 1,
+	"facebook.com",
+	"facebook.net",
+	"fbcdn.net",
+	"instagram.com",
+	"cdninstagram.com",
 
-	"kej.tw": 1,
-	"bing.com": 1,
-	"bing.net": 1,
-	"s3.amazonaws.com": 1,
-	"w3schools.com": 1,
-	"feedly.com": 1,
-	"medium.com": 1,
-	"wordpress.com": 1,
-	"zh.wikipedia.org": 1,
+	"vimeo.com",
+	"kej.tw",
+	"bing.com",
+	"bing.net",
+	"s3.amazonaws.com",
+	"w3schools.com",
+	"feedly.com",
+	"medium.com",
+	"wordpress.com",
+	"zh.wikipedia.org",
 
-	"bbc.com": 1,
-	"voanews.com": 1,
-	"voachinese.com": 1,
-	"epochtimes.com": 1,
-	"aboluowang.com": 1,
-	"ntdtv.com": 1,
-	"bannedbook.org": 1,
-	"creaders.net": 1,
-	"dw.com": 1,
-	"backchina.com": 1,
-	"ltn.com.tw": 1,
-	"rfi.fr": 1,
-};
+	"bbc.com",
+	"nytimes.com",
+	"voanews.com",
+	"voachinese.com",
+	"epochtimes.com",
+	"aboluowang.com",
+	"ntdtv.com",
+	"bannedbook.org",
+	"creaders.net",
+	"dw.com",
+	"backchina.com",
+	"ltn.com.tw",
+	"rfi.fr",
+	"wenxuecity.com",
+	"rfa.org",
+	"udn.com",
+	"appledaily.com.tw",
+	"thenewslens.com",
+	"letscorp.net",
+	"theinitium.com",
+];
 
 
-var hasOwnProperty = Object.hasOwnProperty;
+var domains = {};
+for (var i = 0; i < list.length; i++) {
+	domains[list[i]] = null;
+}
+
 function FindProxyForURL(url, host) {
 	var suffix;
 	var pos = host.lastIndexOf(".");
@@ -65,16 +78,16 @@ function FindProxyForURL(url, host) {
 	while(true) {
 		suffix = host.substring(pos + 1);
 
-		if (hasOwnProperty.call(domains, suffix) && domains[suffix]) {
-			return "SOCKS 127.0.0.1:8888; DIRECT";
-		}
-		else {
+		if (typeof domains[suffix] == "undefined") {
 			if (pos <= 0) {
 				break;
 			}
 			else {
 				pos = host.lastIndexOf(".", pos - 1);
 			}
+		}
+		else {
+			return "SOCKS 127.0.0.1:8888; DIRECT";
 		}
 	}
 
