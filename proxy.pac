@@ -39,7 +39,6 @@ var list = [
 	"bing.net",
 	"s3.amazonaws.com",
 	"w3schools.com",
-	"feedly.com",
 	"medium.com",
 	"wordpress.com",
 	"zh.wikipedia.org",
