@@ -66,39 +66,4 @@ var list = [
 	"theinitium.com",
 ];
 
-
-var isNeedProxy = (function() {
-	var domains = {};
-	for (var i = 0; i < list.length; i++) {
-		domains[list[i]] = null;
-	}
-	list = null;
-
-	return function(host) {
-		var suffix;
-		var pos = host.lastIndexOf(".");
-
-		while(true) {
-			suffix = host.substring(pos + 1);
-
-			if (typeof domains[suffix] == "undefined") {
-				if (pos <= 0) {
-					break;
-				}
-				else {
-					pos = host.lastIndexOf(".", pos - 1);
-				}
-			}
-			else {
-				return true;
-			}
-		}
-
-		return false;
-	}
-})();
-
-
-function FindProxyForURL(url, host) {
-	return isNeedProxy(host) ? "SOCKS 127.0.0.1:8888; DIRECT" : "DIRECT";
-}
+module.exports = list;

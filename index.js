@@ -2,13 +2,10 @@ var net = require('net');
 var url = require('url');
 var http = require('http');
 var socks = require('socks');
+var forceSocksHosts = require('./list.js');
 
 const showLog = true;
 const allBySocks = false;
-
-var forceSocksHosts = [
-	"graph.facebook.com",
-];
 
 var socksProxy = {
 	ipaddress: "127.0.0.1",
@@ -18,12 +15,46 @@ var socksProxy = {
 
 var socksAgent = new socks.Agent({proxy: socksProxy}, false, false);
 
+var isForceSocks = (function() {
+	var domains = {};
+	for (var i = 0; i < forceSocksHosts.length; i++) {
+		domains[forceSocksHosts[i]] = null;
+	}
+	forceSocksHosts = null;
+
+	return function(host) {
+		var suffix;
+		var pos = host.lastIndexOf(".");
+
+		while(true) {
+			suffix = host.substring(pos + 1);
+
+			if (typeof domains[suffix] == "undefined") {
+				if (pos <= 0) {
+					break;
+				}
+				else {
+					pos = host.lastIndexOf(".", pos - 1);
+				}
+			}
+			else {
+				return true;
+			}
+		}
+
+		return false;
+	}
+})();
+
+
 function consoleLog(...arg) {
 	if (showLog) {
 		console.log(...arg);
 	}
 }
 
+
+// http server defination
 http.createServer()
 .on('request', function(req, down) {
 	var info = url.parse(req.url);
@@ -36,7 +67,7 @@ http.createServer()
 	}
 
 	// for http proxy request.
-	var isBySocks = allBySocks || forceSocksHosts.indexOf(info.hostname) != -1;
+	var isBySocks = allBySocks || isForceSocks(info.hostname);
 	var options = {
 		port    : info.port || 80,
 		host    : info.hostname,
@@ -55,6 +86,7 @@ http.createServer()
 		res.pipe(down);
 	})
 	.on('error', function(err) {
+		consoleLog((isBySocks ? 'socks ' : '') + 'http error: ' + req.url);
 		down.end();
 	});
 
@@ -66,7 +98,7 @@ http.createServer()
 
 	//consoleLog('ssl try: ' + req.url);
 
-	var isBySocks = allBySocks || forceSocksHosts.indexOf(info.hostname) != -1;
+	var isBySocks = allBySocks || isForceSocks(info.hostname);
 	if (isBySocks) {
 		socks.createConnection({
 			proxy: socksProxy,
@@ -77,11 +109,12 @@ http.createServer()
 			timeout: 60000
 		}, function(err, up, info) {
 			if (err) {
-				consoleLog(err);
+				consoleLog('socks error with: ' + req.url);
 				down.end();
 			}
 			else {
 				up.on('error', function(err) {
+					consoleLog('socks ssl error: ' + req.url);
 					down.end();
 				});
 				consoleLog('socks ssl pass: ' + req.url);
@@ -97,6 +130,7 @@ http.createServer()
 			down.pipe(up).pipe(down);
 		})
 		.on('error', function(err) {
+			consoleLog('ssl error: ' + req.url);
 			down.end();
 		});
 	}
