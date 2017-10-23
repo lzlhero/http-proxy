@@ -23,24 +23,16 @@ var isForceSocks = (function() {
 	forceSocksHosts = null;
 
 	return function(host) {
-		var suffix;
-		var pos = host.lastIndexOf(".");
+		var dot = host.length, domain;
 
-		while(true) {
-			suffix = host.substring(pos + 1);
+		do {
+			dot = host.lastIndexOf(".", dot - 1);
+			domain = host.substring(dot + 1);
 
-			if (typeof domains[suffix] == "undefined") {
-				if (pos <= 0) {
-					break;
-				}
-				else {
-					pos = host.lastIndexOf(".", pos - 1);
-				}
-			}
-			else {
+			if (typeof domains[domain] != "undefined") {
 				return true;
 			}
-		}
+		} while (dot != -1);
 
 		return false;
 	}
