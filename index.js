@@ -72,12 +72,12 @@ http.createServer()
 	//consoleLog('http try: ' + req.url);
 
 	var up = http.request(options, function(res) {
-		consoleLog((isBySocks ? 'socks ' : '') + 'http pass: ' + req.url);
+		//consoleLog((isBySocks ? 'socks ' : '') + 'http pass: ' + req.url);
 		down.writeHead(res.statusCode, res.headers);
 		res.pipe(down);
 	})
 	.on('error', function(err) {
-		consoleLog((isBySocks ? 'socks ' : '') + 'http error: ' + req.url);
+		consoleLog('error ' + (isBySocks ? 'socks ' : '') + 'http: ' + req.url);
 		down.end();
 	});
 
@@ -97,18 +97,18 @@ http.createServer()
 				host: info.hostname,
 				port: info.port
 			},
-			timeout: 60000
+			timeout: 30000
 		}, function(err, up, info) {
 			if (err) {
-				consoleLog('socks error with: ' + req.url);
+				consoleLog('error socks with: ' + req.url);
 				down.end();
 			}
 			else {
 				up.on('error', function(err) {
-					consoleLog('socks ssl error: ' + req.url);
+					consoleLog('error socks ssl: ' + req.url);
 					down.end();
 				});
-				consoleLog('socks ssl pass: ' + req.url);
+				//consoleLog('socks ssl pass: ' + req.url);
 				down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
 				down.pipe(up).pipe(down);
 			}
@@ -116,12 +116,12 @@ http.createServer()
 	}
 	else {
 		var up = net.createConnection(info.port, info.hostname, function() {
-			consoleLog('ssl pass: ' + req.url);
+			//consoleLog('ssl pass: ' + req.url);
 			down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
 			down.pipe(up).pipe(down);
 		})
 		.on('error', function(err) {
-			consoleLog('ssl error: ' + req.url);
+			consoleLog('error ssl: ' + req.url);
 			down.end();
 		});
 	}

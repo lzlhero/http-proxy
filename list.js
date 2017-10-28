@@ -45,6 +45,9 @@ var list = [
 	"zh.wikipedia.org",
 
 	"bbc.com",
+	"botanwang.com",
+	"blogblog.com",
+	"bloomberg.com",
 	"ftchinese.com",
 	"nyt.com",
 	"nytcn.me",
@@ -71,6 +74,7 @@ var list = [
 	"chinadigitaltimes.net",
 	"trt.net.tr",
 	"zaobao.com.sg",
+	"huaglad.com",
 ];
 
 module.exports = list;
