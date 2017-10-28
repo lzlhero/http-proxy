@@ -6,6 +6,7 @@ var list = [
 	"google.com.hk",
 	"gmail.com",
 	"android.com",
+	"gvt1.com",
 	"chromium.org",
 	"googlesource.com",
 	"gstatic.com",
@@ -44,7 +45,11 @@ var list = [
 	"zh.wikipedia.org",
 
 	"bbc.com",
+	"ftchinese.com",
+	"nyt.com",
+	"nytcn.me",
 	"nytimes.com",
+	"nytstyle.com",
 	"voanews.com",
 	"voachinese.com",
 	"epochtimes.com",
@@ -63,6 +68,9 @@ var list = [
 	"thenewslens.com",
 	"letscorp.net",
 	"theinitium.com",
+	"chinadigitaltimes.net",
+	"trt.net.tr",
+	"zaobao.com.sg",
 ];
 
 module.exports = list;

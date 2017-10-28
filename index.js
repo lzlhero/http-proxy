@@ -13,7 +13,6 @@ var socksProxy = {
 	type: 5
 };
 
-var socksAgent = new socks.Agent({proxy: socksProxy}, false, false);
 
 var isForceSocks = (function() {
 	var domains = {};
@@ -67,7 +66,7 @@ http.createServer()
 		auth    : info.auth,
 		method  : req.method,
 		headers : req.headers,
-		agent   : isBySocks ? socksAgent : null
+		agent   : isBySocks ? new socks.Agent({proxy: socksProxy}, false, false) : null
 	};
 
 	//consoleLog('http try: ' + req.url);
