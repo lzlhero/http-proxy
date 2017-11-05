@@ -61,6 +61,8 @@ var list = [
 	"bannedbook.org",
 	"creaders.net",
 	"dw.com",
+	"dwnews.com",
+	"dwnews.net",
 	"backchina.com",
 	"ltn.com.tw",
 	"rfi.fr",
