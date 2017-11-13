@@ -2,6 +2,7 @@ var net = require('net');
 var url = require('url');
 var http = require('http');
 var socks = require('socks');
+var shell = require('child_process');
 var forceSocksHosts = require('./list.js');
 
 const showLog = true;
@@ -52,6 +53,14 @@ http.createServer()
 
 	// for http direct request, http server response.
 	if (!info.hostname) {
+		if (req.url == '/') {
+			shell.exec('proxy.sh', function(err, stdout, stderr) {
+				if(err) {
+					//consoleLog('shell: ' + stderr);
+				}
+			});
+		}
+
 		down.writeHead(200, { 'Content-Type': 'text/plain' });
 		down.end('Server is running.');
 		return;

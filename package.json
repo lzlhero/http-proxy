@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "log": "node index.js > log.txt"
+    "log": "node index.js > log.txt&"
   },
   "keywords": [],
   "author": "",
