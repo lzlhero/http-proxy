@@ -53,7 +53,7 @@ http.createServer()
 
 	// for http direct request, http server response.
 	if (!info.hostname) {
-		if (req.url == '/') {
+		if (info.pathname == '/') {
 			shell.exec('proxy.sh', function(err, stdout, stderr) {
 				if(err) {
 					//consoleLog('shell: ' + stderr);
