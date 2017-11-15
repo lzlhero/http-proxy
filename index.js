@@ -46,6 +46,29 @@ function consoleLog(...arg) {
 }
 
 
+var execScript = (function() {
+	var started = false;
+
+	return function(url) {
+		if (started) {
+			return;
+		}
+
+		started = true;
+		shell.exec('proxy.sh', function(err, stdout, stderr) {
+			if(err) {
+				//consoleLog('shell: ' + stderr);
+			}
+
+			consoleLog('execute script with: ' + url);
+			setTimeout(function() {
+				started = false;
+			}, 10000);
+		});
+	};
+})();
+
+
 // http server defination
 http.createServer()
 .on('request', function(req, down) {
@@ -54,11 +77,7 @@ http.createServer()
 	// for http direct request, http server response.
 	if (!info.hostname) {
 		if (info.pathname == '/') {
-			shell.exec('proxy.sh', function(err, stdout, stderr) {
-				if(err) {
-					//consoleLog('shell: ' + stderr);
-				}
-			});
+			// TODO: router
 		}
 
 		down.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -87,6 +106,9 @@ http.createServer()
 	})
 	.on('error', function(err) {
 		consoleLog('error ' + (isBySocks ? 'socks ' : '') + 'http: ' + req.url);
+		if (isBySocks) {
+			execScript(req.url);
+		}
 		down.end();
 	});
 
@@ -106,10 +128,11 @@ http.createServer()
 				host: info.hostname,
 				port: info.port
 			},
-			timeout: 30000
+			timeout: 10000
 		}, function(err, up, info) {
 			if (err) {
 				consoleLog('error socks with: ' + req.url);
+				execScript(req.url);
 				down.end();
 			}
 			else {
