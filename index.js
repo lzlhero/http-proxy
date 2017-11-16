@@ -73,16 +73,14 @@ var execScript = (function() {
 			enabled();
 		})
 		.on('error', function(err) {
+			consoleLog('script with: ' + url);
+
 			shell.exec('proxy.sh', function(err, stdout, stderr) {
 				if(err) {
 					consoleLog('script error: ' + stderr.trim());
 				}
-				else {
-					consoleLog('script with: ' + url);
-				}
-
-				enabled();
 			});
+			enabled();
 		});
 	};
 })();
