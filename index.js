@@ -45,7 +45,8 @@ function consoleLog(...arg) {
 	}
 }
 
-// check socks then start socks server
+
+// check socks, then start socks by script
 var execScript = (function() {
 	var disabled = false;
 	var cooldown = 60000;
@@ -123,11 +124,7 @@ http.createServer()
 		consoleLog('error ' + (isBySocks ? 'socks: ' : ': ') + req.url);
 
 		// execute shell script
-		if (err.message == 'Socket Closed' ||
-		    err.message == 'Connection Timed Out') {
-			execScript(req.url);
-		}
-
+		execScript(req.url);
 		down.end();
 	});
 
@@ -153,11 +150,7 @@ http.createServer()
 				consoleLog('error socks with: ' + req.url);
 
 				// execute shell script
-				if (err.message == 'Socket Closed' ||
-				    err.message == 'Connection Timed Out') {
-					execScript(req.url);
-				}
-
+				execScript(req.url);
 				down.end();
 			}
 			else {
