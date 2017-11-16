@@ -122,7 +122,9 @@ http.createServer()
 		consoleLog('error ' + (isBySocks ? 'socks: ' : ': ') + req.url);
 
 		// execute shell script
-		execScript(req.url);
+		if (isBySocks) {
+			execScript(req.url);
+		}
 		down.end();
 	});
 
