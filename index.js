@@ -45,25 +45,43 @@ function consoleLog(...arg) {
 	}
 }
 
-
+// check socks then start socks server
 var execScript = (function() {
-	var started = false;
+	var disabled = false;
+	var cooldown = 60000;
+
+	function enabled() {
+		setTimeout(function() {
+			disabled = false;
+		}, cooldown);
+	}
 
 	return function(url) {
-		if (started) {
+		if (disabled) {
 			return;
 		}
+		disabled = true;
 
-		started = true;
-		shell.exec('proxy.sh', function(err, stdout, stderr) {
-			if(err) {
-				//consoleLog('shell: ' + stderr);
-			}
+		var socksAgent = new socks.Agent({proxy: socksProxy}, true, false);
+		http.get({
+			port    : 443,
+			host    : 'm.facebook.com',
+			agent   : socksAgent
+		}, function(res) {
+			socksAgent.encryptedSocket.end();
+			enabled();
+		})
+		.on('error', function(err) {
+			shell.exec('proxy.sh', function(err, stdout, stderr) {
+				if(err) {
+					consoleLog('script error: ' + stderr.trim());
+				}
+				else {
+					consoleLog('script with: ' + url);
+				}
 
-			consoleLog('execute script with: ' + url);
-			setTimeout(function() {
-				started = false;
-			}, 10000);
+				enabled();
+			});
 		});
 	};
 })();
@@ -76,10 +94,6 @@ http.createServer()
 
 	// for http direct request, http server response.
 	if (!info.hostname) {
-		if (info.pathname == '/') {
-			// TODO: router
-		}
-
 		down.writeHead(200, { 'Content-Type': 'text/plain' });
 		down.end('Server is running.');
 		return;
@@ -101,14 +115,19 @@ http.createServer()
 
 	var up = http.request(options, function(res) {
 		//consoleLog((isBySocks ? 'socks ' : '') + 'http pass: ' + req.url);
+
 		down.writeHead(res.statusCode, res.headers);
 		res.pipe(down);
 	})
 	.on('error', function(err) {
-		consoleLog('error ' + (isBySocks ? 'socks ' : '') + 'http: ' + req.url);
-		if (isBySocks) {
+		consoleLog('error ' + (isBySocks ? 'socks: ' : ': ') + req.url);
+
+		// execute shell script
+		if (err.message == 'Socket Closed' ||
+		    err.message == 'Connection Timed Out') {
 			execScript(req.url);
 		}
+
 		down.end();
 	});
 
@@ -132,15 +151,23 @@ http.createServer()
 		}, function(err, up, info) {
 			if (err) {
 				consoleLog('error socks with: ' + req.url);
-				execScript(req.url);
+
+				// execute shell script
+				if (err.message == 'Socket Closed' ||
+				    err.message == 'Connection Timed Out') {
+					execScript(req.url);
+				}
+
 				down.end();
 			}
 			else {
 				up.on('error', function(err) {
-					consoleLog('error socks ssl: ' + req.url);
+					consoleLog('error socks: ' + req.url);
 					down.end();
 				});
+
 				//consoleLog('socks ssl pass: ' + req.url);
+
 				down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
 				down.pipe(up).pipe(down);
 			}
@@ -149,11 +176,12 @@ http.createServer()
 	else {
 		var up = net.createConnection(info.port, info.hostname, function() {
 			//consoleLog('ssl pass: ' + req.url);
+
 			down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
 			down.pipe(up).pipe(down);
 		})
 		.on('error', function(err) {
-			consoleLog('error ssl: ' + req.url);
+			consoleLog('error: ' + req.url);
 			down.end();
 		});
 	}
