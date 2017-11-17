@@ -21,6 +21,7 @@ var list = [
 	"youtube.com",
 	"youtu.be",
 	"ytimg.com",
+	"2mdn.net",
 	"youtube-nocookie.com",
 
 	"twitter.com",
