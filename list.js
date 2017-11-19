@@ -79,6 +79,7 @@ var list = [
 	"trt.net.tr",
 	"zaobao.com.sg",
 	"huaglad.com",
+	"shadowsocks.org",
 ];
 
 module.exports = list;
