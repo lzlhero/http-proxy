@@ -45,6 +45,7 @@ var list = [
 	"medium.com",
 	"wordpress.com",
 	"zh.wikipedia.org",
+	"zh.m.wikipedia.org",
 
 	"bbc.com",
 	"botanwang.com",
