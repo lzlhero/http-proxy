@@ -109,5 +109,5 @@ var isNeedProxy = (function() {
 
 
 function FindProxyForURL(url, host) {
-	return isNeedProxy(host) ? "SOCKS 127.0.0.1:8888; DIRECT" : "DIRECT";
+	return isNeedProxy(host) ? "SOCKS5 127.0.0.1:8888; DIRECT" : "DIRECT";
 }
