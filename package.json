@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx pm2 start index.js --name=http-proxy -l http-proxy.log -o /dev/null -e /dev/null",
+    "start": "npx pm2 start index.js --name=http-proxy -l http-proxy.log -o /dev/null -e /dev/null --merge-logs",
     "stop": "npx pm2 delete http-proxy",
     "debug": "node index.js"
   },

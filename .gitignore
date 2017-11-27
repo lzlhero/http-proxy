@@ -1,4 +1,4 @@
 .DS_Store
 node_modules/
-http-proxy*.log
+http-proxy.log
 package-lock.json
