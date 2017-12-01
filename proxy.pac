@@ -80,6 +80,7 @@ var list = [
 	"trt.net.tr",
 	"zaobao.com.sg",
 	"huaglad.com",
+	"ow.ly",
 	"shadowsocks.org",
 ];
 
