@@ -81,6 +81,7 @@ var list = [
 	"zaobao.com.sg",
 	"huaglad.com",
 	"ow.ly",
+	"bit.ly",
 	"shadowsocks.org",
 ];
 
