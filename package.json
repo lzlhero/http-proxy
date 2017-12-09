@@ -6,6 +6,7 @@
   "scripts": {
     "start": "npx pm2 start index.js --name=http-proxy -l http-proxy.log -o /dev/null -e /dev/null --merge-logs",
     "stop": "npx pm2 delete http-proxy",
+    "restart": "npx pm2 restart http-proxy",
     "debug": "node index.js"
   },
   "keywords": [],
