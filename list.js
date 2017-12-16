@@ -23,6 +23,7 @@ var list = [
 	"ytimg.com",
 	"2mdn.net",
 	"youtube-nocookie.com",
+	"alphagoteach.deepmind.com",
 
 	"twitter.com",
 	"twimg.com",
