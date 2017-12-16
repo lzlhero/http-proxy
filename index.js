@@ -3,7 +3,7 @@ var url = require('url');
 var http = require('http');
 var socks = require('socks');
 var shell = require('child_process');
-var forceSocksHosts = require('./list.js');
+var forceSocksHosts = require('./proxy.pac');
 
 const showLog = true;
 const allBySocks = false;

@@ -87,6 +87,11 @@ var list = [
 ];
 
 
+if (typeof module != "undefined") {
+	module.exports = list;
+}
+
+
 var isNeedProxy = (function() {
 	var domains = {};
 	for (var i = 0; i < list.length; i++) {
