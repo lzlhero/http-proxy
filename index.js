@@ -121,7 +121,7 @@ http.createServer()
 	//consoleLog('http try: ' + req.url);
 
 	var up = http.request(options, function(res) {
-		//consoleLog((isBySocks ? 'socks ' : '') + 'http pass: ' + req.url);
+		consoleLog((isBySocks ? 'socks ' : '') + 'pass: ' + req.url);
 
 		down.writeHead(res.statusCode, res.headers);
 		res.pipe(down);
@@ -167,7 +167,7 @@ http.createServer()
 					down.end();
 				});
 
-				//consoleLog('socks ssl pass: ' + req.url);
+				//consoleLog('socks pass: ' + req.url);
 
 				down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
 				down.pipe(up).pipe(down);
@@ -176,7 +176,7 @@ http.createServer()
 	}
 	else {
 		var up = net.createConnection(info.port, info.hostname, function() {
-			//consoleLog('ssl pass: ' + req.url);
+			//consoleLog('pass: ' + req.url);
 
 			down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
 			down.pipe(up).pipe(down);
