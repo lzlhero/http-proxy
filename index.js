@@ -99,6 +99,12 @@ http.createServer()
 .on('request', function(req, down) {
 	var info = url.parse(req.url);
 
+	down.on('error', function(err) {
+		consoleLog(err.message);
+		consoleLog('error down with: ' + req.url);
+		down.end();
+	});
+
 	// for http direct request, http server response.
 	if (!info.hostname) {
 		down.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -118,10 +124,10 @@ http.createServer()
 		agent   : isBySocks ? new socks.Agent({proxy: socksProxy}, false, false) : null
 	};
 
-	//consoleLog('http try: ' + req.url);
+	//consoleLog('try: ' + req.url);
 
 	var up = http.request(options, function(res) {
-		consoleLog((isBySocks ? 'socks ' : '') + 'pass: ' + req.url);
+		//consoleLog((isBySocks ? 'socks ' : '') + 'pass: ' + req.url);
 
 		down.writeHead(res.statusCode, res.headers);
 		res.pipe(down);
@@ -142,7 +148,13 @@ http.createServer()
 	// for ssl proxy tunnel.
 	var info = url.parse('http://' + req.url);
 
-	//consoleLog('ssl try: ' + req.url);
+	down.on('error', function(err) {
+		consoleLog(err.message);
+		consoleLog('error down with: ' + req.url);
+		down.end();
+	});
+
+	//consoleLog('try: ' + req.url);
 
 	var isBySocks = allBySocks || isForceSocks(info.hostname);
 	if (isBySocks) {
