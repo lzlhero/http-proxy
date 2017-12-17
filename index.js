@@ -88,7 +88,7 @@ var execScript = (function() {
 
 // catch exceptions
 process.on('uncaughtException', function (err) {
-	console.error((new Date).toUTCString() + ' uncaughtException:', err.message);
+	console.error((new Date).toLocaleString() + ' uncaughtException:', err.message);
 	console.error(err.stack);
 	process.exit(1);
 });
@@ -100,7 +100,6 @@ http.createServer()
 	var info = url.parse(req.url);
 
 	down.on('error', function(err) {
-		consoleLog(err.message);
 		consoleLog('error down with: ' + req.url);
 		down.end();
 	});
@@ -129,6 +128,12 @@ http.createServer()
 	var up = http.request(options, function(res) {
 		//consoleLog((isBySocks ? 'socks ' : '') + 'pass: ' + req.url);
 
+		res.on('error', function(err) {
+			consoleLog('error res with: ' + req.url);
+			consoleLog('location: ' + res.headers.location);
+			down.end();
+		});
+
 		down.writeHead(res.statusCode, res.headers);
 		res.pipe(down);
 	})
@@ -149,7 +154,6 @@ http.createServer()
 	var info = url.parse('http://' + req.url);
 
 	down.on('error', function(err) {
-		consoleLog(err.message);
 		consoleLog('error down with: ' + req.url);
 		down.end();
 	});
