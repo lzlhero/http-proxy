@@ -153,11 +153,6 @@ http.createServer()
 	// for ssl proxy tunnel.
 	var info = url.parse('http://' + req.url);
 
-	down.on('error', function(err) {
-		consoleLog('error down with: ' + req.url);
-		down.end();
-	});
-
 	//consoleLog('try: ' + req.url);
 
 	var isBySocks = allBySocks || isForceSocks(info.hostname);
