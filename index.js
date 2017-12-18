@@ -138,7 +138,7 @@ http.createServer()
 		res.pipe(down);
 	})
 	.on('error', function(err) {
-		consoleLog('error' + (isBySocks ? ' socks: ' : ': ') + req.url);
+		consoleLog((isBySocks ? 'error socks: ' : 'error: ') + req.url);
 
 		// execute shell script
 		if (isBySocks) {
