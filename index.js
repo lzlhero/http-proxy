@@ -3,7 +3,7 @@ var url = require('url');
 var http = require('http');
 var socks = require('socks');
 var shell = require('child_process');
-var forceSocksHosts = require('./proxy.pac');
+var isNeedProxy = require('./proxy.pac');
 
 const showLog = true;
 const allBySocks = false;
@@ -13,30 +13,6 @@ var socksProxy = {
 	port: 8888,
 	type: 5
 };
-
-
-var isForceSocks = (function() {
-	var domains = {};
-	for (var i = 0; i < forceSocksHosts.length; i++) {
-		domains[forceSocksHosts[i]] = null;
-	}
-	forceSocksHosts = null;
-
-	return function(host) {
-		var dot = host.length, domain;
-
-		do {
-			dot = host.lastIndexOf(".", dot - 1);
-			domain = host.substring(dot + 1);
-
-			if (typeof domains[domain] != "undefined") {
-				return true;
-			}
-		} while (dot != -1);
-
-		return false;
-	}
-})();
 
 
 function consoleLog(...arg) {
@@ -112,7 +88,7 @@ http.createServer()
 	}
 
 	// for http proxy request.
-	var isBySocks = allBySocks || isForceSocks(info.hostname);
+	var isBySocks = allBySocks || isNeedProxy(info.hostname);
 	var options = {
 		port    : info.port || 80,
 		host    : info.hostname,
@@ -155,7 +131,7 @@ http.createServer()
 
 	//consoleLog('try: ' + req.url);
 
-	var isBySocks = allBySocks || isForceSocks(info.hostname);
+	var isBySocks = allBySocks || isNeedProxy(info.hostname);
 	if (isBySocks) {
 		socks.createConnection({
 			proxy: socksProxy,

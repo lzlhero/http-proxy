@@ -87,11 +87,6 @@ var list = [
 ];
 
 
-if (typeof module != "undefined") {
-	module.exports = list;
-}
-
-
 var isNeedProxy = (function() {
 	var domains = {};
 	for (var i = 0; i < list.length; i++) {
@@ -118,4 +113,9 @@ var isNeedProxy = (function() {
 
 function FindProxyForURL(url, host) {
 	return isNeedProxy(host) ? "SOCKS5 127.0.0.1:8888; DIRECT" : "DIRECT";
+}
+
+
+if (typeof module != "undefined") {
+	module.exports = isNeedProxy;
 }
