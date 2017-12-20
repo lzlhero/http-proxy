@@ -75,11 +75,6 @@ http.createServer()
 .on('request', function(req, down) {
 	var info = url.parse(req.url);
 
-	down.on('error', function(err) {
-		consoleLog('error down with: ' + req.url);
-		down.end();
-	});
-
 	// for http direct request, http server response.
 	if (!info.hostname) {
 		down.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -104,14 +99,15 @@ http.createServer()
 	var up = http.request(options, function(res) {
 		//consoleLog((isBySocks ? 'socks ' : '') + 'pass: ' + req.url);
 
-		res.on('error', function(err) {
+		try {
+			down.writeHead(res.statusCode, res.headers);
+			res.pipe(down);
+		}
+		catch (err) {
 			consoleLog('error res with: ' + req.url);
 			consoleLog('location: ' + res.headers.location);
 			down.end();
-		});
-
-		down.writeHead(res.statusCode, res.headers);
-		res.pipe(down);
+		}
 	})
 	.on('error', function(err) {
 		consoleLog((isBySocks ? 'error socks: ' : 'error: ') + req.url);
