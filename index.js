@@ -99,13 +99,15 @@ http.createServer()
 	var up = http.request(options, function(res) {
 		//consoleLog((isBySocks ? 'socks ' : '') + 'pass: ' + req.url);
 
+		var status  = res.statusCode;
+		var headers = JSON.parse(JSON.stringify(res.headers).replace(/\\u0000/g, ''));
+
 		try {
-			down.writeHead(res.statusCode, res.headers);
+			down.writeHead(status, headers);
 			res.pipe(down);
 		}
 		catch (err) {
-			consoleLog('error res with: ' + req.url);
-			consoleLog('location: ' + res.headers.location);
+			consoleLog('error headers with: ' + req.url);
 			down.end();
 		}
 	})
