@@ -7,6 +7,7 @@ var isNeedProxy = require('./proxy.pac');
 
 const showLog = true;
 const allBySocks = false;
+const timeout = 10000;
 
 var socksProxy = {
 	ipaddress: "127.0.0.1",
@@ -14,10 +15,26 @@ var socksProxy = {
 	type: 5
 };
 
-
+// console log helper
 function consoleLog(...arg) {
 	if (showLog) {
 		console.log(...arg);
+	}
+}
+
+
+// catch exceptions
+process.on('uncaughtException', function (err) {
+	console.error((new Date).toLocaleString() + ' uncaughtException:', err.message);
+	console.error(err.stack);
+	process.exit(1);
+});
+
+
+// close the socket resource
+function closeSocket(socket) {
+	if (!socket.destroyed) {
+		socket.destroy();
 	}
 }
 
@@ -45,7 +62,7 @@ var execScript = (function() {
 			host    : 'm.facebook.com',
 			agent   : socksAgent
 		}, function(res) {
-			socksAgent.encryptedSocket.end();
+			closeSocket(socksAgent.encryptedSocket);
 			enabled();
 		})
 		.on('error', function(err) {
@@ -62,12 +79,42 @@ var execScript = (function() {
 })();
 
 
-// catch exceptions
-process.on('uncaughtException', function (err) {
-	console.error((new Date).toLocaleString() + ' uncaughtException:', err.message);
-	console.error(err.stack);
-	process.exit(1);
-});
+// pipe sockets stream
+// up and down stream are <net.Socket> type
+function socketsPipe(up, down, isBySocks, url) {
+	down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
+	down.pipe(up).pipe(down);
+
+	//consoleLog((isBySocks ? 'socks pass: ' : 'pass: ') + url);
+}
+
+
+// add sockets exception events
+// up and down stream are <net.Socket> type
+function socketsException(up, down, isBySocks, url) {
+	up.setTimeout(timeout, function() {
+		closeSocket(up);
+	})
+	// server side close by error
+	.on('error', function(err) {
+		consoleLog((isBySocks ? 'error socks: ' : 'error: ') + url);
+		closeSocket(down);
+
+	})
+	// server side close by FIN
+	.on('end', function() {
+		closeSocket(down);
+	});
+
+	// destroy the up stream when client side close
+	// error(destroy without FIN) => close, end(FIN) => close
+	down.setTimeout(timeout, function() {
+		closeSocket(down);
+	})
+	.on('close', function(hadError) {
+		closeSocket(up);
+	});
+}
 
 
 // http server defination
@@ -96,22 +143,32 @@ http.createServer()
 
 	//consoleLog('try: ' + req.url);
 
+	var aborted = false;
+	// up stream is a <http.ClientRequest> <stream.Writable>
+	// res stream is a <http.ServerResponse> <stream.Writable>
+	// down stream is a <http.ServerResponse> <stream.Writable>
 	var up = http.request(options, function(res) {
-		//consoleLog((isBySocks ? 'socks ' : '') + 'pass: ' + req.url);
-
 		var status  = res.statusCode;
 		var headers = JSON.parse(JSON.stringify(res.headers).replace(/\\u0000/g, ''));
 
-		try {
-			down.writeHead(status, headers);
-			res.pipe(down);
-		}
-		catch (err) {
-			consoleLog('error headers with: ' + req.url);
-			down.end();
-		}
+		down.writeHead(status, headers);
+		//pipe 'up response' to 'client response' stream
+		res.pipe(down);
+
+		res.on('end', function() {
+			//consoleLog((isBySocks ? 'socks pass: ' : 'pass: ') + req.url);
+
+			// release socks proxy resource.
+			if (isBySocks) {
+				up.destroy();
+			}
+		});
 	})
 	.on('error', function(err) {
+		if (aborted) {
+			return;
+		}
+
 		consoleLog((isBySocks ? 'error socks: ' : 'error: ') + req.url);
 
 		// execute shell script
@@ -121,6 +178,13 @@ http.createServer()
 		down.end();
 	});
 
+	// abort the up stream when client side error
+	down.on('close', function() {
+		aborted = true;
+		up.destroy();
+	});
+
+	// pipe 'client request' to 'up request' stream
 	req.pipe(up);
 })
 .on('connect', function(req, down, head) {
@@ -137,39 +201,26 @@ http.createServer()
 				host: info.hostname,
 				port: info.port
 			},
-			timeout: 10000
+			timeout: timeout
 		}, function(err, up, info) {
 			if (err) {
 				consoleLog('error socks with: ' + req.url);
 
 				// execute shell script
 				execScript(req.url);
-				down.end();
+				closeSocket(down);
+				return;
 			}
-			else {
-				up.on('error', function(err) {
-					consoleLog('error socks: ' + req.url);
-					down.end();
-				});
 
-				//consoleLog('socks pass: ' + req.url);
-
-				down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
-				down.pipe(up).pipe(down);
-			}
+			socketsPipe(up, down, isBySocks, req.url);
+			socketsException(up, down, isBySocks, req.url);
 		});
 	}
 	else {
 		var up = net.createConnection(info.port, info.hostname, function() {
-			//consoleLog('pass: ' + req.url);
-
-			down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
-			down.pipe(up).pipe(down);
-		})
-		.on('error', function(err) {
-			consoleLog('error: ' + req.url);
-			down.end();
+			socketsPipe(up, down, isBySocks, req.url);
 		});
+		socketsException(up, down, isBySocks, req.url);
 	}
 })
 .listen(8080, '0.0.0.0', function() {
