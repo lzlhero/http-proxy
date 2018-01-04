@@ -7,7 +7,8 @@ var isNeedProxy = require('./proxy.pac');
 
 const showLog = true;
 const allBySocks = false;
-const timeout = 10000;
+const timeout = 5000;
+const socksTimeout = 10000;
 
 var socksProxy = {
 	ipaddress: "127.0.0.1",
@@ -32,9 +33,11 @@ process.on('uncaughtException', function (err) {
 
 
 // close the socket resource
-function closeSocket(socket) {
-	if (!socket.destroyed) {
-		socket.destroy();
+function closeSocket() {
+	for (var i = 0; i < arguments.length; i++) {
+		if (!arguments[i].destroyed) {
+			arguments[i].destroy();
+		}
 	}
 }
 
@@ -85,39 +88,47 @@ function socketsPipe(up, down, isBySocks, url) {
 	down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
 	down.pipe(up).pipe(down);
 
-	//consoleLog((isBySocks ? 'socks pass: ' : 'pass: ') + url);
+	//consoleLog((isBySocks ? 'pass socks: ' : 'pass: ') + url);
 }
 
 
 // add sockets exception events
 // up and down stream are <net.Socket> type
 function socketsException(up, down, isBySocks, url) {
+	// destroy the down stream when server side close
 	up
 	.on('error', function(err) {
 		consoleLog((isBySocks ? 'error socks: ' : 'error: ') + url);
 		closeSocket(down);
-
 	})
 	.on('end', function() {
 		closeSocket(down);
 	});
+	if (!isBySocks) {
+		up.setTimeout(timeout, function() {
+			//consoleLog('timeout: ' + url);
+			closeSocket(up, down);
+		});
+	}
 
 	// destroy the up stream when client side close
-	down.setTimeout(3000, function() {
-		closeSocket(up);
-		closeSocket(down);
-	})
+	down
 	.on('error', function() {
 		closeSocket(up);
 	})
 	.on('end', function() {
 		closeSocket(up);
+	})
+	.setTimeout(timeout, function() {
+		closeSocket(up, down);
 	});
 }
 
 
 // http server defination
-http.createServer()
+var server = http.createServer()
+// req is <http.IncomingMessage>
+// down is <http.ServerResponse>
 .on('request', function(req, down) {
 	var info = url.parse(req.url);
 
@@ -144,8 +155,8 @@ http.createServer()
 
 	var aborted = false;
 	// up stream is a <http.ClientRequest> <stream.Writable>
-	// res stream is a <http.ServerResponse> <stream.Writable>
 	// down stream is a <http.ServerResponse> <stream.Writable>
+	// res stream is a <http.IncomingMessage> <stream.Readable>
 	var up = http.request(options, function(res) {
 		var status  = res.statusCode;
 		var headers = JSON.parse(JSON.stringify(res.headers).replace(/\\u0000/g, ''));
@@ -155,10 +166,9 @@ http.createServer()
 		res.pipe(down);
 
 		res.on('end', function() {
-			//consoleLog((isBySocks ? 'socks pass: ' : 'pass: ') + req.url);
+			//consoleLog((isBySocks ? 'pass socks: ' : 'pass: ') + req.url);
 
 			up.destroy();
-			down.end();
 		});
 	})
 	.on('error', function(err) {
@@ -198,7 +208,7 @@ http.createServer()
 				host: info.hostname,
 				port: info.port
 			},
-			timeout: timeout
+			timeout: socksTimeout
 		}, function(err, up, info) {
 			if (err) {
 				consoleLog('error socks with: ' + req.url);
@@ -223,3 +233,6 @@ http.createServer()
 .listen(8080, '0.0.0.0', function() {
 	console.log('Http(s) proxy ' + (allBySocks ? 'by socks ' : '' ) + 'listening on ' + this.address().address + ':' + this.address().port);
 });
+
+// important, set inactivity http timeout
+server.timeout = timeout;
