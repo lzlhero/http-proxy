@@ -7,6 +7,7 @@ var isNeedProxy = require('./proxy.pac');
 
 const showLog = true;
 const allBySocks = false;
+const timeout = 10000;
 
 var socksProxy = {
 	ipaddress: "127.0.0.1",
@@ -91,26 +92,25 @@ function socketsPipe(up, down, isBySocks, url) {
 // add sockets exception events
 // up and down stream are <net.Socket> type
 function socketsException(up, down, isBySocks, url) {
-	up.setTimeout(1000, function() {
-		closeSocket(up);
-	})
-	// server side close by error
+	up
 	.on('error', function(err) {
 		consoleLog((isBySocks ? 'error socks: ' : 'error: ') + url);
 		closeSocket(down);
 
 	})
-	// server side close by FIN
 	.on('end', function() {
 		closeSocket(down);
 	});
 
 	// destroy the up stream when client side close
-	// error(destroy without FIN) => close, end(FIN) => close
-	down.setTimeout(1000, function() {
+	down.setTimeout(3000, function() {
+		closeSocket(up);
 		closeSocket(down);
 	})
-	.on('close', function(hadError) {
+	.on('error', function() {
+		closeSocket(up);
+	})
+	.on('end', function() {
 		closeSocket(up);
 	});
 }
@@ -157,10 +157,8 @@ http.createServer()
 		res.on('end', function() {
 			//consoleLog((isBySocks ? 'socks pass: ' : 'pass: ') + req.url);
 
-			// release socks proxy resource.
-			if (isBySocks) {
-				up.destroy();
-			}
+			up.destroy();
+			down.end();
 		});
 	})
 	.on('error', function(err) {
@@ -200,7 +198,7 @@ http.createServer()
 				host: info.hostname,
 				port: info.port
 			},
-			timeout: 10000
+			timeout: timeout
 		}, function(err, up, info) {
 			if (err) {
 				consoleLog('error socks with: ' + req.url);
