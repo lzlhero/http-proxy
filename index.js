@@ -7,7 +7,6 @@ var isNeedProxy = require('./proxy.pac');
 
 const showLog = true;
 const allBySocks = false;
-const timeout = 10000;
 
 var socksProxy = {
 	ipaddress: "127.0.0.1",
@@ -92,7 +91,7 @@ function socketsPipe(up, down, isBySocks, url) {
 // add sockets exception events
 // up and down stream are <net.Socket> type
 function socketsException(up, down, isBySocks, url) {
-	up.setTimeout(timeout, function() {
+	up.setTimeout(1000, function() {
 		closeSocket(up);
 	})
 	// server side close by error
@@ -108,7 +107,7 @@ function socketsException(up, down, isBySocks, url) {
 
 	// destroy the up stream when client side close
 	// error(destroy without FIN) => close, end(FIN) => close
-	down.setTimeout(timeout, function() {
+	down.setTimeout(1000, function() {
 		closeSocket(down);
 	})
 	.on('close', function(hadError) {
@@ -201,7 +200,7 @@ http.createServer()
 				host: info.hostname,
 				port: info.port
 			},
-			timeout: timeout
+			timeout: 10000
 		}, function(err, up, info) {
 			if (err) {
 				consoleLog('error socks with: ' + req.url);
