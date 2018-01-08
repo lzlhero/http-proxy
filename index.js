@@ -98,7 +98,7 @@ function socketsException(up, down, isBySocks, url) {
 	// destroy the down stream when server side close
 	up
 	.on('error', function(err) {
-		consoleLog((isBySocks ? 'error socks: ' : 'error: ') + url);
+		//consoleLog((isBySocks ? 'error socks: ' : 'error: ') + url);
 		closeSocket(down);
 	})
 	.on('end', function() {
@@ -106,7 +106,7 @@ function socketsException(up, down, isBySocks, url) {
 	});
 	if (!isBySocks) {
 		up.setTimeout(timeout, function() {
-			//consoleLog('timeout: ' + url);
+			consoleLog('timeout: ' + url);
 			closeSocket(up, down);
 		});
 	}
@@ -176,7 +176,7 @@ var server = http.createServer()
 			return;
 		}
 
-		consoleLog((isBySocks ? 'error socks: ' : 'error: ') + req.url);
+		//consoleLog((isBySocks ? 'error socks: ' : 'error: ') + req.url);
 
 		// execute shell script
 		if (isBySocks) {
