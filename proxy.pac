@@ -53,6 +53,7 @@ var list = [
 	"botanwang.com",
 	"blogblog.com",
 	"bloomberg.com",
+	"bullog.org",
 	"ftchinese.com",
 	"nyt.com",
 	"nytcn.me",
