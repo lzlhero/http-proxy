@@ -176,7 +176,7 @@ var server = http.createServer()
 			return;
 		}
 
-		//consoleLog((isBySocks ? 'error socks: ' : 'error: ') + req.url);
+		consoleLog((isBySocks ? 'error socks: ' : 'error: ') + req.url);
 
 		// execute shell script
 		if (isBySocks) {
