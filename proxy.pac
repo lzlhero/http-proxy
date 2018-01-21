@@ -85,6 +85,7 @@ var list = [
 	"huaglad.com",
 	"ow.ly",
 	"bit.ly",
+	"pin-cong.com",
 	"shadowsocks.org",
 ];
 
