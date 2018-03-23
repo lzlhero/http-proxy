@@ -38,6 +38,7 @@ var list = [
 
 	"ift.tt",
 	"vimeo.com",
+	"vine.co",
 	"kej.tw",
 	"bing.com",
 	"bing.net",
