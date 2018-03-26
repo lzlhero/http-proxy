@@ -49,6 +49,8 @@ var list = [
 	"zh.wikipedia.org",
 	"zh.m.wikipedia.org",
 	"gist.github.com",
+	"github.io",
+	"telegram.org",
 
 	"bbc.com",
 	"botanwang.com",
