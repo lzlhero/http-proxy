@@ -7,8 +7,8 @@ var isNeedProxy = require('./proxy.pac');
 
 const showLog = true;
 const allBySocks = false;
-const timeout = 5000;
-const socksTimeout = 10000;
+const httpTimeout = 5000;
+const socketTimeout = 10000;
 
 var socksProxy = {
 	ipaddress: "127.0.0.1",
@@ -105,8 +105,8 @@ function socketsException(up, down, isBySocks, url) {
 		closeSocket(down);
 	});
 	if (!isBySocks) {
-		up.setTimeout(timeout, function() {
-			consoleLog('timeout: ' + url);
+		up.setTimeout(socketTimeout, function() {
+			consoleLog('request timeout: ' + url);
 			closeSocket(up, down);
 		});
 	}
@@ -119,7 +119,7 @@ function socketsException(up, down, isBySocks, url) {
 	.on('end', function() {
 		closeSocket(up);
 	})
-	.setTimeout(timeout, function() {
+	.setTimeout(socketTimeout, function() {
 		closeSocket(up, down);
 	});
 }
@@ -208,7 +208,7 @@ var server = http.createServer()
 				host: info.hostname,
 				port: info.port
 			},
-			timeout: socksTimeout
+			timeout: socketTimeout
 		}, function(err, up, info) {
 			if (err) {
 				consoleLog('error socks with: ' + req.url);
@@ -235,4 +235,4 @@ var server = http.createServer()
 });
 
 // important, set inactivity http timeout
-server.timeout = timeout;
+server.timeout = httpTimeout;
