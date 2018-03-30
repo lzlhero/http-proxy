@@ -78,6 +78,7 @@ var list = [
 	"wenxuecity.com",
 	"rfa.org",
 	"udn.com",
+	"appledaily.com",
 	"appledaily.com.tw",
 	"thenewslens.com",
 	"letscorp.net",
