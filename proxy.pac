@@ -92,6 +92,8 @@ var list = [
 	"pin-cong.com",
 	"shadowsocks.org",
 	"xuehua.us",
+	"lvv2.com",
+	"feedburner.com",
 ];
 
 
