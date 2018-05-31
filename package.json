@@ -15,7 +15,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "socks": "^1.1.10"
+    "socks": "^1.1.10",
+    "stream-replace": "^1.0.0"
   },
   "devDependencies": {
     "pm2": "^2.8.0"

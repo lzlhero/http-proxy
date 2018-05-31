@@ -1,8 +1,10 @@
+var fs = require('fs');
 var net = require('net');
 var url = require('url');
 var http = require('http');
 var socks = require('socks');
 var shell = require('child_process');
+var replace = require('stream-replace');
 var isNeedProxy = require('./proxy.pac');
 
 const showLog = true;
@@ -124,6 +126,28 @@ function socketsException(up, down, isBySocks, url) {
 	});
 }
 
+// service a http lite server
+function httpServer(req, res) {
+	var info = url.parse('http://' + req.headers.host + req.url);
+
+	switch (info.pathname) {
+		case '/':
+			res.writeHead(200, { 'Content-Type': 'text/plain' });
+			res.end('Server is running.');
+			break;
+
+		case '/proxy.pac':
+			res.writeHead(200, { 'Content-Type': 'application/x-ns-proxy-autoconfig' });
+			fs.createReadStream('proxy.pac')
+				.pipe(replace('127.0.0.1', info.hostname))
+				.pipe(res);
+			break;
+
+		default:
+			res.writeHead(404, 'Not found');
+			res.end();
+	}
+}
 
 // http server defination
 var server = http.createServer()
@@ -134,8 +158,7 @@ var server = http.createServer()
 
 	// for http direct request, http server response.
 	if (!info.hostname) {
-		down.writeHead(200, { 'Content-Type': 'text/plain' });
-		down.end('Server is running.');
+		httpServer(req, down);
 		return;
 	}
 
@@ -231,7 +254,7 @@ var server = http.createServer()
 	}
 })
 .listen(8080, '0.0.0.0', function() {
-	console.log('Http(s) proxy ' + (allBySocks ? 'by socks ' : '' ) + 'listening on ' + this.address().address + ':' + this.address().port);
+	console.log('Http(s) proxy ' + (allBySocks ? 'by socks ' : '' ) + 'service on ' + this.address().address + ':' + this.address().port);
 });
 
 // important, set inactivity http timeout
