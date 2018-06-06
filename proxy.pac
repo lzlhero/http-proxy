@@ -94,6 +94,8 @@ var list = [
 	"xuehua.us",
 	"lvv2.com",
 	"feedburner.com",
+	"benfrain.com",
+	"tubeheartbeat.com",
 ];
 
 

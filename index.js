@@ -155,6 +155,7 @@ var server = http.createServer()
 // down is <http.ServerResponse>
 .on('request', function(req, down) {
 	var info = url.parse(req.url);
+	req.headers = JSON.parse(JSON.stringify(req.headers).replace(/\\u0000/g, ''));
 
 	// for http direct request, http server response.
 	if (!info.hostname) {
