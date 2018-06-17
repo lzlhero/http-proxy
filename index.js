@@ -151,10 +151,14 @@ function httpServer(req, res) {
 
 // remove non-ascii characters from headers
 function purgeHeaders(headers) {
-	for (let key in headers) {
-		if (!headers.hasOwnProperty(key)) continue;
+	var list = ['user-agent'];
+	var key;
 
-		headers[key] = headers[key].replace(/[^\x20-\x7E]/g, '');
+	for (var i = 0; i < list.length; i++) {
+		key = list[i];
+		if (headers.hasOwnProperty(key)) {
+			headers[key] = headers[key].replace(/[^\x20-\x7E]/g, '');
+		}
 	}
 
 	return headers;
@@ -167,7 +171,7 @@ var server = http.createServer()
 // down is <http.ServerResponse>
 .on('request', function(req, down) {
 	var info = url.parse(req.url);
-	req.headers = purgeHeaders(req.headers);
+	purgeHeaders(req.headers);
 
 	// for http direct request, http server response.
 	if (!info.hostname) {
@@ -195,9 +199,9 @@ var server = http.createServer()
 	// res stream is a <http.IncomingMessage> <stream.Readable>
 	var up = http.request(options, function(res) {
 		var status  = res.statusCode;
-		var headers = purgeHeaders(res.headers);
+		purgeHeaders(res.headers);
 
-		down.writeHead(status, headers);
+		down.writeHead(status, res.headers);
 		//pipe 'up response' to 'client response' stream
 		res.pipe(down);
 
