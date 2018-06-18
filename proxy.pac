@@ -14,6 +14,7 @@ var list = [
 	"googleusercontent.com",
 	"googlevideo.com",
 	"googleapis.com",
+	"googleblog.com",
 	"appspot.com",
 	"blogspot.com",
 	"blogspot.jp",
