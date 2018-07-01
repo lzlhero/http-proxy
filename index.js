@@ -151,14 +151,10 @@ function httpServer(req, res) {
 
 // remove non-ascii characters from headers
 function purgeHeaders(headers) {
-	var list = ['user-agent', 'location'];
-	var key;
+	for (let key in headers) {
+		if (!headers.hasOwnProperty(key)) continue;
 
-	for (var i = 0; i < list.length; i++) {
-		key = list[i];
-		if (headers.hasOwnProperty(key)) {
-			headers[key] = headers[key].replace(/[^\x20-\x7E]/g, '');
-		}
+		headers[key] = headers[key].replace(/[^\x20-\x7E]/g, '');
 	}
 
 	return headers;
