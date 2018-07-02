@@ -25,6 +25,10 @@ function consoleLog(...arg) {
 	}
 }
 
+function type(object) {
+	return Object.prototype.toString.call(object)
+		.match(/\[object (.+)\]/)[1].toLowerCase();
+}
 
 // catch exceptions
 process.on('uncaughtException', function (err) {
@@ -154,10 +158,14 @@ function purgeHeaders(headers) {
 	for (let key in headers) {
 		if (!headers.hasOwnProperty(key)) continue;
 
-		headers[key] = headers[key].replace(/[^\x20-\x7E]/g, '');
+		var headerType = type(headers[key]);
+		if (headerType == 'array' || headerType == 'object') {
+			purgeHeaders(headers[key]);
+		}
+		else {
+			headers[key] = headers[key].replace(/[^\x20-\x7E]/g, '');
+		}
 	}
-
-	return headers;
 }
 
 
