@@ -37,6 +37,7 @@ var list = [
 	"instagram.com",
 	"cdninstagram.com",
 
+	"mozilla.org",
 	"ift.tt",
 	"vimeo.com",
 	"vine.co",
