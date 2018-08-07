@@ -98,6 +98,8 @@ var list = [
 	"feedburner.com",
 	"benfrain.com",
 	"tubeheartbeat.com",
+	"storm.mg",
+	"hexieshe.com",
 ];
 
 
