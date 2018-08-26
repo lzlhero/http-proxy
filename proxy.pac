@@ -4,6 +4,7 @@ var list = [
 	"google.cn",
 	"google.com",
 	"google.com.hk",
+	"google.ae",
 	"gmail.com",
 	"android.com",
 	"gvt1.com",
@@ -100,6 +101,8 @@ var list = [
 	"tubeheartbeat.com",
 	"storm.mg",
 	"hexieshe.com",
+	"boxun.com",
+	"tumblr.com",
 ];
 
 

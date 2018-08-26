@@ -6,7 +6,7 @@
   "scripts": {
     "start": "pm2 start index.js --name=http-proxy -l http-proxy.log -o /dev/null -e /dev/null --merge-logs",
     "stop": "pm2 delete http-proxy",
-    "restart": "pm2 restart http-proxy",
+    "reload": "pm2 restart http-proxy",
     "load": "node index.js > /dev/null &",
     "kill": "pkill -9 -f index.js",
     "debug": "node index.js"
