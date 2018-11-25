@@ -268,10 +268,18 @@ var server = http.createServer()
 		});
 	}
 	else {
-		var up = net.createConnection(info.port, info.hostname, function() {
-			socketsPipe(up, down, isBySocks, req.url);
-		});
-		socketsException(up, down, isBySocks, req.url);
+		try {
+			var up = net.createConnection(info.port, info.hostname, function() {
+				socketsPipe(up, down, isBySocks, req.url);
+			});
+
+
+			socketsException(up, down, isBySocks, req.url);
+		}
+		catch (error) {
+			console.log('catch issue');
+			console.dir(info);
+		}
 	}
 })
 .listen(8080, '0.0.0.0', function() {

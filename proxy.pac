@@ -103,6 +103,8 @@ var list = [
 	"hexieshe.com",
 	"boxun.com",
 	"tumblr.com",
+	"dlvr.it",
+	"rti.org.tw",
 ];
 
 
