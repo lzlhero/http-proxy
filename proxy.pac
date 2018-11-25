@@ -8,6 +8,7 @@ var list = [
 	"gmail.com",
 	"android.com",
 	"gvt1.com",
+	"chrome.com",
 	"chromium.org",
 	"googlesource.com",
 	"gstatic.com",
