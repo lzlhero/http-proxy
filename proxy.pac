@@ -4,9 +4,11 @@ var list = [
 	"google.cn",
 	"google.com",
 	"google.com.hk",
+	"google.ae",
 	"gmail.com",
 	"android.com",
 	"gvt1.com",
+	"chrome.com",
 	"chromium.org",
 	"googlesource.com",
 	"gstatic.com",
@@ -14,6 +16,7 @@ var list = [
 	"googleusercontent.com",
 	"googlevideo.com",
 	"googleapis.com",
+	"googleblog.com",
 	"appspot.com",
 	"blogspot.com",
 	"blogspot.jp",
@@ -36,6 +39,7 @@ var list = [
 	"instagram.com",
 	"cdninstagram.com",
 
+	"mozilla.org",
 	"ift.tt",
 	"vimeo.com",
 	"vine.co",
@@ -96,6 +100,12 @@ var list = [
 	"feedburner.com",
 	"benfrain.com",
 	"tubeheartbeat.com",
+	"storm.mg",
+	"hexieshe.com",
+	"boxun.com",
+	"tumblr.com",
+	"dlvr.it",
+	"rti.org.tw",
 ];
 
 

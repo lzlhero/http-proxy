@@ -25,6 +25,10 @@ function consoleLog(...arg) {
 	}
 }
 
+function type(object) {
+	return Object.prototype.toString.call(object)
+		.match(/\[object (.+)\]/)[1].toLowerCase();
+}
 
 // catch exceptions
 process.on('uncaughtException', function (err) {
@@ -151,17 +155,17 @@ function httpServer(req, res) {
 
 // remove non-ascii characters from headers
 function purgeHeaders(headers) {
-	var list = ['user-agent'];
-	var key;
+	for (let key in headers) {
+		if (!headers.hasOwnProperty(key)) continue;
 
-	for (var i = 0; i < list.length; i++) {
-		key = list[i];
-		if (headers.hasOwnProperty(key)) {
+		var headerType = type(headers[key]);
+		if (headerType == 'array' || headerType == 'object') {
+			purgeHeaders(headers[key]);
+		}
+		else {
 			headers[key] = headers[key].replace(/[^\x20-\x7E]/g, '');
 		}
 	}
-
-	return headers;
 }
 
 
@@ -264,10 +268,18 @@ var server = http.createServer()
 		});
 	}
 	else {
-		var up = net.createConnection(info.port, info.hostname, function() {
-			socketsPipe(up, down, isBySocks, req.url);
-		});
-		socketsException(up, down, isBySocks, req.url);
+		try {
+			var up = net.createConnection(info.port, info.hostname, function() {
+				socketsPipe(up, down, isBySocks, req.url);
+			});
+
+
+			socketsException(up, down, isBySocks, req.url);
+		}
+		catch (error) {
+			console.log('catch issue');
+			console.dir(info);
+		}
 	}
 })
 .listen(8080, '0.0.0.0', function() {
