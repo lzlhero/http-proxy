@@ -91,10 +91,12 @@ var execScript = (function() {
 // pipe sockets stream
 // up and down stream are <net.Socket> type
 function socketsPipe(up, down, isBySocks, url) {
-	down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
-	down.pipe(up).pipe(down);
+	if (down.writable) {
+		down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
+		down.pipe(up).pipe(down);
 
-	//consoleLog((isBySocks ? 'pass socks: ' : 'pass: ') + url);
+		//consoleLog((isBySocks ? 'pass socks: ' : 'pass: ') + url);
+	}
 }
 
 
@@ -272,7 +274,6 @@ var server = http.createServer()
 			var up = net.createConnection(info.port, info.hostname, function() {
 				socketsPipe(up, down, isBySocks, req.url);
 			});
-
 
 			socketsException(up, down, isBySocks, req.url);
 		}
