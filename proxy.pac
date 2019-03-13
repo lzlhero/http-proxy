@@ -48,6 +48,7 @@ var list = [
 	"bing.net",
 	"s3.amazonaws.com",
 	"w3schools.com",
+	"golang.org",
 	"medium.com",
 	"wordpress.com",
 	"zh.wikipedia.org",
@@ -109,6 +110,10 @@ var list = [
 	"tumblr.com",
 	"dlvr.it",
 	"rti.org.tw",
+	"pornhub.com",
+	"ptt.cc",
+	"setn.com",
+	"steemit.com",
 ];
 
 
