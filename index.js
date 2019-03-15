@@ -60,9 +60,7 @@ var execScript = (function() {
 	}
 
 	return function(url) {
-		if (disabled) {
-			return;
-		}
+		if (disabled) return;
 		disabled = true;
 
 		var socksAgent = new socks.Agent({proxy: socksProxy}, true, false);
@@ -91,12 +89,12 @@ var execScript = (function() {
 // pipe sockets stream
 // up and down stream are <net.Socket> type
 function socketsPipe(up, down, isBySocks, url) {
-	if (down.writable) {
-		down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
-		down.pipe(up).pipe(down);
+	if (!down.writable) return;
 
-		//consoleLog((isBySocks ? 'pass socks: ' : 'pass: ') + url);
-	}
+	down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
+	down.pipe(up).pipe(down);
+
+	//consoleLog((isBySocks ? 'pass socks: ' : 'pass: ') + url);
 }
 
 
@@ -218,9 +216,7 @@ var server = http.createServer()
 		});
 	})
 	.on('error', function(err) {
-		if (aborted) {
-			return;
-		}
+		if (aborted) return;
 
 		consoleLog((isBySocks ? 'error socks: ' : 'error: ') + req.url);
 
