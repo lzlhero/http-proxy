@@ -177,10 +177,7 @@ var server = http.createServer()
 	var info = url.parse(req.url);
 
 	// for http direct request, http server response.
-	if (!info.hostname) {
-		httpServer(req, down);
-		return;
-	}
+	if (!info.hostname) return httpServer(req, down);
 
 	// for http proxy request.
 	var isBySocks = allBySocks || isNeedProxy(info.hostname);
