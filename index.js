@@ -175,7 +175,6 @@ var server = http.createServer()
 // down is <http.ServerResponse>
 .on('request', function(req, down) {
 	var info = url.parse(req.url);
-	purgeHeaders(req.headers);
 
 	// for http direct request, http server response.
 	if (!info.hostname) {
@@ -185,15 +184,17 @@ var server = http.createServer()
 
 	// for http proxy request.
 	var isBySocks = allBySocks || isNeedProxy(info.hostname);
+
 	var options = {
-		port    : info.port || 80,
-		host    : info.hostname,
-		path    : info.path,
-		auth    : info.auth,
-		method  : req.method,
-		headers : req.headers,
-		agent   : isBySocks ? new socks.Agent({proxy: socksProxy}, false, false) : null
+		agent  : isBySocks ? new socks.Agent({proxy: socksProxy}, false, false) : null,
+		method : req.method,
+		headers: {}
 	};
+
+	// purgeHeaders(req.rawHeaders);
+	for (var i = 0; i < req.rawHeaders.length; i = i + 2) {
+		options.headers[req.rawHeaders[i]] = req.rawHeaders[i + 1];
+	}
 
 	//consoleLog('try: ' + req.url);
 
@@ -201,11 +202,14 @@ var server = http.createServer()
 	// up stream is a <http.ClientRequest> <stream.Writable>
 	// down stream is a <http.ServerResponse> <stream.Writable>
 	// res stream is a <http.IncomingMessage> <stream.Readable>
-	var up = http.request(options, function(res) {
-		var status  = res.statusCode;
-		purgeHeaders(res.headers);
+	var up = http.request(req.url, options, function(res) {
+		down.statusCode = res.statusCode;
 
-		down.writeHead(status, res.headers);
+		// purgeHeaders(res.rawHeaders);
+		for (var i = 0; i < res.rawHeaders.length; i = i + 2) {
+			down.setHeader(res.rawHeaders[i],  res.rawHeaders[i + 1]);
+		}
+
 		//pipe 'up response' to 'client response' stream
 		res.pipe(down);
 
