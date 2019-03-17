@@ -86,18 +86,17 @@ function getHeaders(rawHeaders) {
 	var headers = {}, name, value, type;
 
 	for (var i = 0; i < rawHeaders.length; i = i + 2) {
-		name = rawHeaders[i];
-		value = rawHeaders[i + 1];
-
 		// remove non-ascii characters from header
 		// value = rawHeaders[i + 1].replace(/[^\x20-\x7E]/g, ''));
+		value = rawHeaders[i + 1];
+		name  = rawHeaders[i];
+		type  = typeof headers[name];
 
-		type = typeof headers[name];
 		if (type === 'undefined') {
 			headers[name] = value;
 		}
 		else if (type === 'string') {
-			header[name] = [headers[name], value];
+			headers[name] = [headers[name], value];
 		}
 		else {
 			headers[name].push(value);
