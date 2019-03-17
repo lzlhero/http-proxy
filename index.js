@@ -88,11 +88,25 @@ var execScript = (function() {
 
 // set http raw headers
 function setHeaders(http, rawHeaders) {
+	var headers = {}, name, value;
+
 	for (var i = 0; i < rawHeaders.length; i = i + 2) {
-		http.setHeader(rawHeaders[i], rawHeaders[i + 1]);
+		name = rawHeaders[i];
+		value = rawHeaders[i + 1];
 
 		// remove non-ascii characters from header
-		// http.setHeader(rawHeaders[i], rawHeaders[i + 1].replace(/[^\x20-\x7E]/g, ''));
+		// value = rawHeaders[i + 1].replace(/[^\x20-\x7E]/g, ''));
+
+		if (headers[name]) {
+			headers[name].push(value);
+		}
+		else {
+			headers[name] = [value];
+		}
+	}
+
+	for (name in headers) {
+		http.setHeader(name, headers[name]);
 	}
 }
 
