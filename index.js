@@ -86,6 +86,17 @@ var execScript = (function() {
 })();
 
 
+// set http raw headers
+function setHeaders(http, rawHeaders) {
+	for (var i = 0; i < rawHeaders.length; i = i + 2) {
+		http.setHeader(rawHeaders[i], rawHeaders[i + 1]);
+
+		// remove non-ascii characters from header
+		// http.setHeader(rawHeaders[i], rawHeaders[i + 1].replace(/[^\x20-\x7E]/g, ''));
+	}
+}
+
+
 // pipe sockets stream
 // up and down stream are <net.Socket> type
 function socketsPipe(up, down, isBySocks, url) {
@@ -130,6 +141,7 @@ function socketsException(up, down, isBySocks, url) {
 	});
 }
 
+
 // service a http lite server
 function httpServer(req, res) {
 	var info = url.parse('http://' + req.headers.host + req.url);
@@ -153,21 +165,6 @@ function httpServer(req, res) {
 	}
 }
 
-// remove non-ascii characters from headers
-function purgeHeaders(headers) {
-	for (let key in headers) {
-		if (!headers.hasOwnProperty(key)) continue;
-
-		var headerType = type(headers[key]);
-		if (headerType == 'array' || headerType == 'object') {
-			purgeHeaders(headers[key]);
-		}
-		else {
-			headers[key] = headers[key].replace(/[^\x20-\x7E]/g, '');
-		}
-	}
-}
-
 
 // http server defination
 var server = http.createServer()
@@ -184,30 +181,21 @@ var server = http.createServer()
 
 	var options = {
 		agent  : isBySocks ? new socks.Agent({proxy: socksProxy}, false, false) : null,
-		method : req.method,
-		headers: {}
+		method : req.method
 	};
-
-	// purgeHeaders(req.rawHeaders);
-	for (var i = 0; i < req.rawHeaders.length; i = i + 2) {
-		options.headers[req.rawHeaders[i]] = req.rawHeaders[i + 1];
-	}
-
-	//consoleLog('try: ' + req.url);
 
 	var aborted = false;
 	// up stream is a <http.ClientRequest> <stream.Writable>
 	// down stream is a <http.ServerResponse> <stream.Writable>
 	// res stream is a <http.IncomingMessage> <stream.Readable>
 	var up = http.request(req.url, options, function(res) {
+		// pass server http code to down stream
 		down.statusCode = res.statusCode;
 
-		// purgeHeaders(res.rawHeaders);
-		for (var i = 0; i < res.rawHeaders.length; i = i + 2) {
-			down.setHeader(res.rawHeaders[i],  res.rawHeaders[i + 1]);
-		}
+		// pass server http headers to down stream
+		setHeaders(down, res.rawHeaders);
 
-		//pipe 'up response' to 'client response' stream
+		// pass server http body to down stream
 		res.pipe(down);
 
 		res.on('end', function() {
@@ -234,7 +222,12 @@ var server = http.createServer()
 		up.destroy();
 	});
 
-	// pipe 'client request' to 'up request' stream
+	// pass client http headers to up stream
+	setHeaders(up, req.rawHeaders);
+
+	//consoleLog('try: ' + req.url);
+
+	// pass client http body to up stream
 	req.pipe(up);
 })
 .on('connect', function(req, down, head) {
