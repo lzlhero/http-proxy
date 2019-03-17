@@ -25,11 +25,6 @@ function consoleLog(...arg) {
 	}
 }
 
-function type(object) {
-	return Object.prototype.toString.call(object)
-		.match(/\[object (.+)\]/)[1].toLowerCase();
-}
-
 // catch exceptions
 process.on('uncaughtException', function (err) {
 	console.error((new Date).toLocaleString() + ' uncaughtException:', err.message);
@@ -86,9 +81,9 @@ var execScript = (function() {
 })();
 
 
-// set http raw headers
-function setHeaders(http, rawHeaders) {
-	var headers = {}, name, value;
+// get headers object from rawHeaders
+function getHeaders(rawHeaders) {
+	var headers = {}, name, value, type;
 
 	for (var i = 0; i < rawHeaders.length; i = i + 2) {
 		name = rawHeaders[i];
@@ -97,17 +92,19 @@ function setHeaders(http, rawHeaders) {
 		// remove non-ascii characters from header
 		// value = rawHeaders[i + 1].replace(/[^\x20-\x7E]/g, ''));
 
-		if (headers[name]) {
-			headers[name].push(value);
+		type = typeof headers[name];
+		if (type === 'undefined') {
+			headers[name] = value;
+		}
+		else if (type === 'string') {
+			header[name] = [headers[name], value];
 		}
 		else {
-			headers[name] = [value];
+			headers[name].push(value);
 		}
 	}
 
-	for (name in headers) {
-		http.setHeader(name, headers[name]);
-	}
+	return headers;
 }
 
 
@@ -195,6 +192,7 @@ var server = http.createServer()
 
 	var options = {
 		agent  : isBySocks ? new socks.Agent({proxy: socksProxy}, false, false) : null,
+		headers: getHeaders(req.rawHeaders),
 		method : req.method
 	};
 
@@ -203,13 +201,10 @@ var server = http.createServer()
 	// down stream is a <http.ServerResponse> <stream.Writable>
 	// res stream is a <http.IncomingMessage> <stream.Readable>
 	var up = http.request(req.url, options, function(res) {
-		// pass server http code to down stream
-		down.statusCode = res.statusCode;
+		// pass server code and headers to down stream
+		down.writeHead(res.statusCode, getHeaders(res.rawHeaders));
 
-		// pass server http headers to down stream
-		setHeaders(down, res.rawHeaders);
-
-		// pass server http body to down stream
+		// pass server body to down stream
 		res.pipe(down);
 
 		res.on('end', function() {
@@ -236,12 +231,9 @@ var server = http.createServer()
 		up.destroy();
 	});
 
-	// pass client http headers to up stream
-	setHeaders(up, req.rawHeaders);
-
 	//consoleLog('try: ' + req.url);
 
-	// pass client http body to up stream
+	// pass client body to up stream
 	req.pipe(up);
 })
 .on('connect', function(req, down, head) {
