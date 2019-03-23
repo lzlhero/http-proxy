@@ -58,7 +58,9 @@ var list = [
 	"telegram.org",
 	"reddit.com",
 	"redd.it",
+	"redditstatic.com",
 	"redditmedia.com",
+	"gfycat.com",
 
 	"bbc.com",
 	"botanwang.com",
