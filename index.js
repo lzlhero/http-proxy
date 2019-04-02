@@ -61,7 +61,7 @@ var execScript = (function() {
 		var socksAgent = new socks.Agent({proxy: socksProxy}, true, false);
 		http.get({
 			port    : 443,
-			host    : 'm.facebook.com',
+			host    : 'www.google.com',
 			agent   : socksAgent
 		}, function(res) {
 			closeSocket(socksAgent.encryptedSocket);
