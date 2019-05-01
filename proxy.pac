@@ -117,6 +117,7 @@ var list = [
 	"ptt.cc",
 	"setn.com",
 	"steemit.com",
+	"wolfax.com",
 ];
 
 
