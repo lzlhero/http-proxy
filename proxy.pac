@@ -73,6 +73,8 @@ var list = [
 	"nytcn.me",
 	"nytimes.com",
 	"nytstyle.com",
+	"wsj.com",
+	"wsj.net",
 	"voanews.com",
 	"voachinese.com",
 	"epochtimes.com",
