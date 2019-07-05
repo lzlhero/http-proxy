@@ -120,6 +120,7 @@ var list = [
 	"setn.com",
 	"steemit.com",
 	"wolfax.com",
+	"nikkei.com",
 ];
 
 
