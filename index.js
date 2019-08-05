@@ -68,7 +68,7 @@ var execScript = (function() {
 			enabled();
 		})
 		.on('error', function(err) {
-			consoleLog('script with: ' + url);
+			//consoleLog('script with: ' + url);
 
 			shell.exec('socks-proxy', function(err, stdout, stderr) {
 				if(err) {
@@ -132,7 +132,7 @@ function socketsException(up, down, isBySocks, url) {
 	});
 	if (!isBySocks) {
 		up.setTimeout(socketTimeout, function() {
-			consoleLog('request timeout: ' + url);
+			//consoleLog('request timeout: ' + url);
 			closeSocket(up, down);
 		});
 	}
@@ -214,7 +214,7 @@ var server = http.createServer()
 	.on('error', function(err) {
 		if (aborted) return;
 
-		consoleLog((isBySocks ? 'error socks: ' : 'error: ') + req.url);
+		//consoleLog((isBySocks ? 'error socks: ' : 'error: ') + req.url);
 
 		// execute shell script
 		if (isBySocks) {
@@ -251,7 +251,7 @@ var server = http.createServer()
 			timeout: socketTimeout
 		}, function(err, up, info) {
 			if (err) {
-				consoleLog('error socks with: ' + req.url);
+				//consoleLog('error socks with: ' + req.url);
 
 				// execute shell script
 				execScript(req.url);
