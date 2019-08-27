@@ -121,6 +121,7 @@ var list = [
 	"steemit.com",
 	"wolfax.com",
 	"nikkei.com",
+	"wenzhao.ca",
 ];
 
 
