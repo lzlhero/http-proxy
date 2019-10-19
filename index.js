@@ -73,8 +73,8 @@ var execScript = (function() {
 			shell.exec('socks-proxy', function(err, stdout, stderr) {
 				if(err) {
 					shell.exec('echo $PATH', function(err, stdout, stderr) {
-						consoleLog(err, stdout, stderr)
-					})
+						consoleLog('$PATH: ' + stdout.trim());
+					});
 					consoleLog('script error: ' + stderr.trim());
 				}
 			});
