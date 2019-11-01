@@ -279,9 +279,11 @@ var server = http.createServer()
 })
 .listen(8080, '0.0.0.0', function() {
 	console.log('Http(s) proxy ' + (allBySocks ? 'by socks ' : '' ) + 'service on ' + this.address().address + ':' + this.address().port);
+	/*
 	shell.exec('echo $PATH', function(err, stdout, stderr) {
 		consoleLog('$PATH: ' + stdout.trim());
 	});
+	*/
 });
 
 // important, set inactivity http timeout
