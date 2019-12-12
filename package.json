@@ -2,14 +2,14 @@
   "name": "http-proxy",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "http-proxy.js",
   "scripts": {
-    "start": "pm2 start index.js --name=http-proxy -l http-proxy.log -o /dev/null -e /dev/null --merge-logs",
+    "start": "pm2 start http-proxy.js --name=http-proxy -l http-proxy.log -o /dev/null -e /dev/null --merge-logs",
     "stop": "pm2 delete http-proxy",
     "reload": "pm2 restart http-proxy",
-    "load": "node index.js > /dev/null &",
-    "kill": "pkill -9 -f index.js",
-    "debug": "node index.js"
+    "load": "node http-proxy.js > /dev/null &",
+    "kill": "pkill -9 -f http-proxy.js",
+    "debug": "node http-proxy.js"
   },
   "keywords": [],
   "author": "",
