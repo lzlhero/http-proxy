@@ -125,6 +125,7 @@ var list = [
 	"nikkei.com",
 	"wenzhao.ca",
 	"iyouport.org",
+	"economist.com",
 ];
 
 
