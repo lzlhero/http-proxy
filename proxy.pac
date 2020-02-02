@@ -127,6 +127,7 @@ var list = [
 	"iyouport.org",
 	"economist.com",
 	"pincong.rocks",
+	"archive.is",
 ];
 
 
