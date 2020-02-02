@@ -126,6 +126,7 @@ var list = [
 	"wenzhao.ca",
 	"iyouport.org",
 	"economist.com",
+	"archive.is",
 ];
 
 
