@@ -128,6 +128,7 @@ var list = [
 	"economist.com",
 	"pincong.rocks",
 	"archive.is",
+	"matters.news",
 ];
 
 
