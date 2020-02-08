@@ -129,6 +129,7 @@ var list = [
 	"pincong.rocks",
 	"archive.is",
 	"matters.news",
+	"jandan.net",
 ];
 
 
