@@ -62,6 +62,7 @@ var list = [
 	"gfycat.com",
 	"imgur.com",
 	"apkmirror.com",
+	"apkpure.com",
 	"ycombinator.com",
 	"ifixit.com",
 
