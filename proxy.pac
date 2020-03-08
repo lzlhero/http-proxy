@@ -131,6 +131,7 @@ var list = [
 	"archive.is",
 	"matters.news",
 	"jandan.net",
+	"wallmama.com",
 ];
 
 
