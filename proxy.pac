@@ -132,6 +132,7 @@ var list = [
 	"matters.news",
 	"jandan.net",
 	"wallmama.com",
+	"scmp.com",
 ];
 
 
