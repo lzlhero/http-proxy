@@ -6,9 +6,10 @@
   "scripts": {
     "start": "pm2 start http-proxy.js --name=http-proxy -l http-proxy.log -o /dev/null -e /dev/null --merge-logs",
     "stop": "pm2 delete http-proxy",
-    "reload": "pm2 restart http-proxy",
+    "restart": "pm2 restart http-proxy",
     "load": "node http-proxy.js > /dev/null &",
     "kill": "pkill -9 -f http-proxy.js",
+    "reload": "npm run kill; npm run load",
     "debug": "node http-proxy.js"
   },
   "keywords": [],
