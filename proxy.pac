@@ -119,6 +119,9 @@ var list = [
 	"dlvr.it",
 	"rti.org.tw",
 	"pornhub.com",
+	"spankbang.com",
+	"redtube.com",
+	"rdtcdn.com",
 	"ptt.cc",
 	"setn.com",
 	"steemit.com",
@@ -133,8 +136,6 @@ var list = [
 	"jandan.net",
 	"wallmama.com",
 	"scmp.com",
-	"spankbang.com",
-	"redtube.com",
 ];
 
 
