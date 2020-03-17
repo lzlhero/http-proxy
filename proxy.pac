@@ -48,6 +48,7 @@ var list = [
 	"bing.net",
 	"s3.amazonaws.com",
 	"w3schools.com",
+	"stackoverflow.com",
 	"golang.org",
 	"medium.com",
 	"wordpress.com",
