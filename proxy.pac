@@ -119,6 +119,7 @@ var list = [
 	"dlvr.it",
 	"rti.org.tw",
 	"pornhub.com",
+	"phncdn.com",
 	"spankbang.com",
 	"redtube.com",
 	"rdtcdn.com",
