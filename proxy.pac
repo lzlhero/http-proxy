@@ -67,6 +67,7 @@ var list = [
 	"ifixit.com",
 
 	"bbc.com",
+	"bbci.co.uk",
 	"botanwang.com",
 	"blogblog.com",
 	"bloomberg.com",
