@@ -121,6 +121,7 @@ var list = [
 	"rti.org.tw",
 	"pornhub.com",
 	"phncdn.com",
+	"nsfwmonster.com",
 	"spankbang.com",
 	"redtube.com",
 	"rdtcdn.com",
