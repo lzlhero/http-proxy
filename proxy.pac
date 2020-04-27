@@ -92,6 +92,7 @@ var list = [
 	"backchina.com",
 	"ltn.com.tw",
 	"rfi.fr",
+	"ampproject.org",
 	"wenxuecity.com",
 	"rfa.org",
 	"udn.com",
