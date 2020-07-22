@@ -141,6 +141,7 @@ var list = [
 	"wallmama.com",
 	"scmp.com",
 	"xvideos.com",
+	"businessweekly.com.tw",
 ];
 
 
