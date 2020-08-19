@@ -68,6 +68,7 @@ var list = [
 	"ifixit.com",
 
 	"bbc.com",
+	"bbci.co.uk",
 	"botanwang.com",
 	"blogblog.com",
 	"bloomberg.com",
@@ -92,6 +93,7 @@ var list = [
 	"backchina.com",
 	"ltn.com.tw",
 	"rfi.fr",
+	"ampproject.org",
 	"wenxuecity.com",
 	"rfa.org",
 	"udn.com",
@@ -120,6 +122,8 @@ var list = [
 	"dlvr.it",
 	"rti.org.tw",
 	"pornhub.com",
+	"phncdn.com",
+	"nsfwmonster.com",
 	"spankbang.com",
 	"redtube.com",
 	"rdtcdn.com",
@@ -137,6 +141,8 @@ var list = [
 	"jandan.net",
 	"wallmama.com",
 	"scmp.com",
+	"xvideos.com",
+	"businessweekly.com.tw",
 ];
 
 
