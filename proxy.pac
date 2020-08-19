@@ -59,6 +59,7 @@ var list = [
 	"redd.it",
 	"redditstatic.com",
 	"redditmedia.com",
+	"redgifs.com",
 	"gfycat.com",
 	"imgur.com",
 	"apkmirror.com",
