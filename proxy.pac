@@ -54,6 +54,7 @@ var list = [
 	"wikipedia.org",
 	"gist.github.com",
 	"github.io",
+	"code.jquery.com",
 	"telegram.org",
 	"reddit.com",
 	"redd.it",
