@@ -4,9 +4,9 @@
   "description": "",
   "main": "http-proxy.js",
   "scripts": {
-    "start": "pm2 start http-proxy.js --name=http-proxy -l http-proxy.log -o /dev/null -e /dev/null --merge-logs",
-    "stop": "pm2 delete http-proxy",
-    "restart": "pm2 restart http-proxy",
+    "start": "pm2 start pm2.json",
+    "stop": "pm2 delete pm2.json",
+    "restart": "pm2 reload pm2.json",
     "load": "node http-proxy.js > /dev/null &",
     "kill": "pkill -9 -f http-proxy.js",
     "reload": "npm run kill; npm run load",
