@@ -114,6 +114,7 @@ var list = [
 	"xuehua.us",
 	"lvv2.com",
 	"feedburner.com",
+	"feedly.com",
 	"benfrain.com",
 	"tubeheartbeat.com",
 	"storm.mg",
