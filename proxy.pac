@@ -162,7 +162,7 @@ var isNeedProxy = (function() {
 			dot = host.lastIndexOf(".", dot - 1);
 			domain = host.substring(dot + 1);
 
-			if (typeof domains[domain] != "undefined") {
+			if (domains[domain] === null) {
 				return true;
 			}
 		} while (dot != -1);
@@ -177,6 +177,6 @@ function FindProxyForURL(url, host) {
 }
 
 
-if (typeof module != "undefined") {
+if (typeof module !== "undefined") {
 	module.exports = isNeedProxy;
 }
