@@ -5,8 +5,8 @@
   "instances": 1,
   "merge_logs": true,
   "log_file": "http-proxy.log",
-  "out_file": "/dev/null",
-  "error_file": "/dev/null",
+  "out_file": "NULL",
+  "error_file": "NULL",
   "log_date_format" : "YYYY-MM-DD HH:mm:ss",
   "env": {
     "NODE_ENV": "production"
