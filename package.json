@@ -13,7 +13,7 @@
     "debug": "node http-proxy.js"
   },
   "keywords": [],
-  "author": "Lewis",
+  "author": "Lewis Lv",
   "license": "ISC",
   "dependencies": {
     "socks": "^1.1.10",
