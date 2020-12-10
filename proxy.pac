@@ -68,6 +68,9 @@ var list = [
 	"apkpure.com",
 	"ycombinator.com",
 	"ifixit.com",
+	"dropbox.com",
+	"dropboxstatic.com",
+	"dropboxusercontent.com",
 
 	"bbc.com",
 	"bbci.co.uk",
