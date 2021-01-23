@@ -151,7 +151,6 @@ var list = [
 	"scmp.com",
 	"xvideos.com",
 	"businessweekly.com.tw",
-	"pianyuan.la",
 ];
 
 
