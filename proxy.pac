@@ -53,7 +53,7 @@ var list = [
 	"medium.com",
 	"wordpress.com",
 	"wikipedia.org",
-	"gist.github.com",
+	"github.com",
 	"github.io",
 	"github.blog",
 	"code.jquery.com",
