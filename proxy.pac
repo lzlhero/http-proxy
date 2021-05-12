@@ -128,6 +128,7 @@ var list = [
 	"hexieshe.com",
 	"boxun.com",
 	"tumblr.com",
+	"flickr.com",
 	"dlvr.it",
 	"rti.org.tw",
 	"pornhub.com",
