@@ -155,6 +155,7 @@ var list = [
 	"businessweekly.com.tw",
 	"rarbgprx.org",
 	"williamlong.info",
+	"pianyuan.org",
 ];
 
 
