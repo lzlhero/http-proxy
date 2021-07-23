@@ -29,7 +29,7 @@ function consoleLog(...arg) {
 process.on('uncaughtException', function (err) {
 	console.error((new Date).toLocaleString() + ' uncaughtException:', err.message);
 	console.error(err.stack);
-	process.exit(1);
+	// process.exit(1);
 });
 
 
