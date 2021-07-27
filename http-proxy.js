@@ -19,7 +19,7 @@ var socksProxy = {
 };
 
 // console log helper
-function consoleLog(...arg) {
+function log(...arg) {
 	if (showLog) {
 		console.log(...arg);
 	}
@@ -29,7 +29,6 @@ function consoleLog(...arg) {
 process.on('uncaughtException', function (err) {
 	console.error((new Date).toLocaleString() + ' uncaughtException:', err.message);
 	console.error(err.stack);
-	// process.exit(1);
 });
 
 
@@ -68,11 +67,11 @@ var execScript = (function() {
 			enabled();
 		})
 		.on('error', function(err) {
-			//consoleLog('script with: ' + url);
+			//log('script with: ' + url);
 
 			shell.exec('socks-proxy', function(err, stdout, stderr) {
 				if(err) {
-					consoleLog('script error: ' + stderr.trim());
+					log('script error: ' + stderr.trim());
 				}
 			});
 			enabled();
@@ -114,7 +113,7 @@ function socketsPipe(up, down, isBySocks, url) {
 	down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
 	down.pipe(up).pipe(down);
 
-	//consoleLog((isBySocks ? 'pass socks: ' : 'pass: ') + url);
+	//log((isBySocks ? 'pass socks: ' : 'pass: ') + url);
 }
 
 
@@ -124,7 +123,7 @@ function socketsException(up, down, isBySocks, url) {
 	// destroy the down stream when server side close
 	up
 	.on('error', function(err) {
-		//consoleLog((isBySocks ? 'error socks: ' : 'error: ') + url);
+		//log((isBySocks ? 'error socks: ' : 'error: ') + url);
 		closeSocket(down);
 	})
 	.on('end', function() {
@@ -132,7 +131,7 @@ function socketsException(up, down, isBySocks, url) {
 	});
 	if (!isBySocks) {
 		up.setTimeout(socketTimeout, function() {
-			//consoleLog('request timeout: ' + url);
+			//log('request timeout: ' + url);
 			closeSocket(up, down);
 		});
 	}
@@ -206,7 +205,7 @@ var server = http.createServer()
 		res.pipe(down);
 
 		res.on('end', function() {
-			//consoleLog((isBySocks ? 'pass socks: ' : 'pass: ') + req.url);
+			//log((isBySocks ? 'pass socks: ' : 'pass: ') + req.url);
 
 			up.destroy();
 		});
@@ -214,7 +213,7 @@ var server = http.createServer()
 	.on('error', function(err) {
 		if (aborted) return;
 
-		//consoleLog((isBySocks ? 'error socks: ' : 'error: ') + req.url);
+		//log((isBySocks ? 'error socks: ' : 'error: ') + req.url);
 
 		// execute shell script
 		if (isBySocks) {
@@ -229,7 +228,7 @@ var server = http.createServer()
 		up.destroy();
 	});
 
-	//consoleLog('try: ' + req.url);
+	//log('try: ' + req.url);
 
 	// pass client body to up stream
 	req.pipe(up);
@@ -238,7 +237,7 @@ var server = http.createServer()
 	// for ssl proxy tunnel.
 	var info = url.parse('http://' + req.url);
 
-	//consoleLog('try: ' + req.url);
+	//log('try: ' + req.url);
 
 	var isBySocks = allBySocks || isNeedProxy(info.hostname);
 	if (isBySocks) {
@@ -251,7 +250,7 @@ var server = http.createServer()
 			timeout: socketTimeout
 		}, function(err, up, info) {
 			if (err) {
-				//consoleLog('error socks with: ' + req.url);
+				//log('error socks with: ' + req.url);
 
 				// execute shell script
 				execScript(req.url);
@@ -281,7 +280,7 @@ var server = http.createServer()
 	console.log('Http(s) proxy ' + (allBySocks ? 'by socks ' : '' ) + 'service on ' + this.address().address + ':' + this.address().port);
 	/*
 	shell.exec('echo $PATH', function(err, stdout, stderr) {
-		consoleLog('$PATH: ' + stdout.trim());
+		log('$PATH: ' + stdout.trim());
 	});
 	*/
 });
