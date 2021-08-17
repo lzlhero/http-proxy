@@ -4,6 +4,7 @@ var list = [
   "google.cn",
   "google.com",
   "google.com.hk",
+  "google.co.jp",
   "google.ae",
   "gmail.com",
   "android.com",
