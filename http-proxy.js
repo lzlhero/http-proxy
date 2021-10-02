@@ -228,7 +228,7 @@ var server = http.createServer()
     up.destroy();
   });
 
-  log('try: ' + req.url);
+  log((isBySocks ? 'try socks: ' : 'try: ') + req.url);
 
   // pass client body to up stream
   req.pipe(up);
