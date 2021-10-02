@@ -7,7 +7,7 @@ var shell = require('child_process');
 var replace = require('stream-replace');
 var isNeedProxy = require('./proxy.pac');
 
-const showLog = true;
+const showLog = false;
 const allBySocks = false;
 const httpTimeout = 5000;
 const socketTimeout = 10000;
@@ -67,7 +67,7 @@ var execScript = (function() {
       enabled();
     })
     .on('error', function(err) {
-      //log('script with: ' + url);
+      log('script with: ' + url);
 
       shell.exec('socks-proxy', function(err, stdout, stderr) {
         if(err) {
@@ -113,17 +113,17 @@ function socketsPipe(up, down, isBySocks, url) {
   down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
   down.pipe(up).pipe(down);
 
-  //log((isBySocks ? 'pass socks: ' : 'pass: ') + url);
+  log((isBySocks ? 'pass socks: ' : 'pass: ') + url);
 }
 
 
 // add sockets exception events
 // up and down stream are <net.Socket> type
-function socketsException(up, down, isBySocks, url) {
+function listenException(up, down, isBySocks, url) {
   // destroy the down stream when server side close
   up
   .on('error', function(err) {
-    //log((isBySocks ? 'error socks: ' : 'error: ') + url);
+    log((isBySocks ? 'error socks: ' : 'error: ') + url);
     closeSocket(down);
   })
   .on('end', function() {
@@ -131,7 +131,7 @@ function socketsException(up, down, isBySocks, url) {
   });
   if (!isBySocks) {
     up.setTimeout(socketTimeout, function() {
-      //log('request timeout: ' + url);
+      log('request timeout: ' + url);
       closeSocket(up, down);
     });
   }
@@ -205,7 +205,7 @@ var server = http.createServer()
     res.pipe(down);
 
     res.on('end', function() {
-      //log((isBySocks ? 'pass socks: ' : 'pass: ') + req.url);
+      log((isBySocks ? 'pass socks: ' : 'pass: ') + req.url);
 
       up.destroy();
     });
@@ -213,7 +213,7 @@ var server = http.createServer()
   .on('error', function(err) {
     if (aborted) return;
 
-    //log((isBySocks ? 'error socks: ' : 'error: ') + req.url);
+    log((isBySocks ? 'error socks: ' : 'error: ') + req.url);
 
     // execute shell script
     if (isBySocks) {
@@ -228,7 +228,7 @@ var server = http.createServer()
     up.destroy();
   });
 
-  //log('try: ' + req.url);
+  log('try: ' + req.url);
 
   // pass client body to up stream
   req.pipe(up);
@@ -236,10 +236,10 @@ var server = http.createServer()
 .on('connect', function(req, down, head) {
   // for ssl proxy tunnel.
   var info = url.parse('http://' + req.url);
-
-  //log('try: ' + req.url);
-
   var isBySocks = allBySocks || isNeedProxy(info.hostname);
+
+  log((isBySocks ? 'try socks: ' : 'try: ') + req.url);
+
   if (isBySocks) {
     socks.createConnection({
       proxy: socksProxy,
@@ -250,16 +250,16 @@ var server = http.createServer()
       timeout: socketTimeout
     }, function(err, up, info) {
       if (err) {
-        //log('error socks with: ' + req.url);
+        log('socks5 error with: ' + req.url);
 
         // execute shell script
         execScript(req.url);
         closeSocket(down);
-        return;
+      } else {
+        // pass socket connectioin up to down
+        socketsPipe(up, down, isBySocks, req.url);
+        listenException(up, down, isBySocks, req.url);
       }
-
-      socketsPipe(up, down, isBySocks, req.url);
-      socketsException(up, down, isBySocks, req.url);
     });
   }
   else {
@@ -268,7 +268,7 @@ var server = http.createServer()
         socketsPipe(up, down, isBySocks, req.url);
       });
 
-      socketsException(up, down, isBySocks, req.url);
+      listenException(up, down, isBySocks, req.url);
     }
     catch (error) {
       console.log('catch issue');
