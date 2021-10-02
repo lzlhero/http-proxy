@@ -155,7 +155,6 @@ var list = [
   "xvideos.com",
   "businessweekly.com.tw",
   "rarbgprx.org",
-  "williamlong.info",
   "pianyuan.org",
   "investing.com",
 ];
