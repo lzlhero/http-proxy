@@ -157,6 +157,7 @@ var list = [
   "rarbgprx.org",
   "pianyuan.org",
   "investing.com",
+  "v2ex.com",
 ];
 
 
