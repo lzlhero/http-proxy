@@ -4,13 +4,13 @@
   "description": "",
   "main": "http-proxy.js",
   "scripts": {
-    "start": "pm2 start pm2.json",
-    "stop": "pm2 delete pm2.json",
-    "restart": "pm2 reload pm2.json",
-    "load": "node http-proxy.js > /dev/null &",
-    "kill": "pkill -9 -f http-proxy.js",
-    "reload": "npm run kill; npm run load",
-    "debug": "node http-proxy.js"
+    "start": "node http-proxy.js > /dev/null &",
+    "stop": "pkill -9 -f http-proxy.js",
+    "reload": "npm run stop; npm run start",
+    "debug": "node http-proxy.js",
+    "pm2:start": "pm2 start pm2.json",
+    "pm2:stop": "pm2 delete pm2.json",
+    "pm2:reload": "pm2 reload pm2.json"
   },
   "keywords": [],
   "author": "lzlhero",

@@ -157,7 +157,7 @@ function httpServer(req, res) {
   switch (info.pathname) {
     case '/':
       res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end('Server is running.');
+      res.end('HTTP Proxy server is running.');
       break;
 
     case '/proxy.pac':
