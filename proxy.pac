@@ -160,7 +160,7 @@ var list = [
   "pianyuan.org",
   "investing.com",
   "v2ex.com",
-  "nunuyy.org",
+  "nunuyy1.org",
 ];
 
 
