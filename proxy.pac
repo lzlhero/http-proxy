@@ -40,6 +40,8 @@ var list = [
   "instagram.com",
   "cdninstagram.com",
 
+  "yahoo.com",
+  "yimg.com",
   "mozilla.org",
   "ift.tt",
   "vimeo.com",
