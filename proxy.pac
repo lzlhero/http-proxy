@@ -155,6 +155,7 @@ var list = [
   "wallmama.com",
   "scmp.com",
   "xvideos.com",
+  "xvideos-cdn.com",
   "businessweekly.com.tw",
   "rarbgprx.org",
   "pianyuan.org",
