@@ -162,6 +162,8 @@ var list = [
   "investing.com",
   "v2ex.com",
   "nunuyy1.org",
+  "mulanci.org",
+  "mojim.com",
 ];
 
 
