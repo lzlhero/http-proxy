@@ -165,6 +165,7 @@ var list = [
   "mulanci.org",
   "mojim.com",
   "inf.news",
+  "aznude.com",
 ];
 
 
