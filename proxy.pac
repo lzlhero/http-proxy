@@ -161,7 +161,7 @@ var list = [
   "pianyuan.org",
   "investing.com",
   "v2ex.com",
-  "nunuyy1.org",
+  "nunuyy2.org",
   "mulanci.org",
   "mojim.com",
   "inf.news",
