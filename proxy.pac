@@ -76,6 +76,7 @@ var list = [
   "dropbox.com",
   "dropboxstatic.com",
   "dropboxusercontent.com",
+  "quora.com",
 
   "bbc.com",
   "bbci.co.uk",
