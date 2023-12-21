@@ -2,6 +2,7 @@ var fs = require('fs');
 var net = require('net');
 var url = require('url');
 var http = require('http');
+var https = require('https');
 var socks = require('socks');
 var shell = require('child_process');
 var replace = require('stream-replace');
@@ -194,10 +195,11 @@ var server = http.createServer()
   };
 
   var aborted = false;
-  // up stream is a <http.ClientRequest> <stream.Writable>
-  // down stream is a <http.ServerResponse> <stream.Writable>
-  // res stream is a <http.IncomingMessage> <stream.Readable>
-  var up = http.request(req.url, options, function(res) {
+  // up stream is a <http(s).ClientRequest> <stream.Writable>
+  // down stream is a <http(s).ServerResponse> <stream.Writable>
+  // res stream is a <http(s).IncomingMessage> <stream.Readable>
+  var protocol = info.protocol === 'http:' ? http : https;
+  var up = protocol.request(req.url, options, function(res) {
     // pass server code and headers to down stream
     down.writeHead(res.statusCode, getHeaders(res.rawHeaders));
 
