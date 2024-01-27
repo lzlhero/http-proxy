@@ -79,6 +79,8 @@ var list = [
   "dropboxusercontent.com",
   "quora.com",
   "t.me",
+  "telegram.org",
+  "cdn-telegram.org",
   "uptodown.com",
 
   "bbc.com",
