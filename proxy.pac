@@ -60,6 +60,7 @@ var list = [
   "github.com",
   "github.io",
   "github.blog",
+  "githubusercontent.com",
   "code.jquery.com",
   "telegram.org",
   "reddit.com",
@@ -77,6 +78,8 @@ var list = [
   "dropboxstatic.com",
   "dropboxusercontent.com",
   "quora.com",
+  "t.me",
+  "uptodown.com",
 
   "bbc.com",
   "bbci.co.uk",
