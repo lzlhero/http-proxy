@@ -62,7 +62,6 @@ var list = [
   "github.blog",
   "githubusercontent.com",
   "code.jquery.com",
-  "telegram.org",
   "reddit.com",
   "redd.it",
   "redditstatic.com",
