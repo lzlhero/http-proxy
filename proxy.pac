@@ -173,6 +173,7 @@ var list = [
   "aznude.com",
   "careerengine.us",
   "pornbest.org",
+  "x.com",
 ];
 
 
