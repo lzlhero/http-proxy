@@ -32,6 +32,7 @@ var list = [
   "twitter.com",
   "twimg.com",
   "t.co",
+  "x.com",
 
   "facebook.com",
   "facebook.net",
@@ -173,7 +174,6 @@ var list = [
   "aznude.com",
   "careerengine.us",
   "pornbest.org",
-  "x.com",
 ];
 
 
