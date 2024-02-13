@@ -174,6 +174,8 @@ var list = [
   "aznude.com",
   "careerengine.us",
   "pornbest.org",
+  "celebjihad.com",
+  "deviantart.com",
 ];
 
 
