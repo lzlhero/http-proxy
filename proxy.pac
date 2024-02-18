@@ -176,6 +176,10 @@ var list = [
   "pornbest.org",
   "celebjihad.com",
   "deviantart.com",
+  "xhamster.com",
+  "91porny.com",
+  "shemalez.com",
+  "youporn.com",
 ];
 
 
