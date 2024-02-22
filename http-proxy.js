@@ -42,6 +42,14 @@ function closeSocket() {
   }
 }
 
+// restart socks proxy
+function restartSocksProxy() {
+  shell.exec('socks-proxy', function(err, stdout, stderr) {
+    if(err) {
+      log('script error: ' + stderr.trim());
+    }
+  });
+}
 
 // check socks, then start socks by script
 var execScript = (function() {
@@ -68,13 +76,9 @@ var execScript = (function() {
       enabled();
     })
     .on('error', function(err) {
-      log('script with: ' + url);
+      log('socks5 restart with: ' + url);
 
-      shell.exec('socks-proxy', function(err, stdout, stderr) {
-        if(err) {
-          log('script error: ' + stderr.trim());
-        }
-      });
+      restartSocksProxy();
       enabled();
     });
   };
@@ -157,6 +161,7 @@ function httpServer(req, res) {
 
   switch (info.pathname) {
     case '/':
+      restartSocksProxy();
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.end(`HTTP(s) Proxy Server ${allBySocks ? 'all by socks ' : ''}is running.`);
       break;
