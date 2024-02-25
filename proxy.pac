@@ -156,6 +156,7 @@ var list = [
   "careerengine.us",
   "inf.news",
   "thinkpads.com",
+  "f-droid.org",
 
   "pornhub.com",
   "phncdn.com",
