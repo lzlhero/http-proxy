@@ -157,6 +157,7 @@ var list = [
   "inf.news",
   "thinkpads.com",
   "f-droid.org",
+  "bootstrapcdn.com",
 
   "pornhub.com",
   "phncdn.com",
