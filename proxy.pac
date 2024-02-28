@@ -158,6 +158,7 @@ var list = [
   "thinkpads.com",
   "f-droid.org",
   "bootstrapcdn.com",
+  "pub.network",
 
   "pornhub.com",
   "phncdn.com",
