@@ -161,6 +161,7 @@ var list = [
   "pub.network",
   "youmaker.com",
   "pinterest.com",
+  "pinimg.com",
 
   "pornhub.com",
   "phncdn.com",
