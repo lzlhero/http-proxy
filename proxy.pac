@@ -160,6 +160,7 @@ var list = [
   "bootstrapcdn.com",
   "pub.network",
   "youmaker.com",
+  "pinterest.com",
 
   "pornhub.com",
   "phncdn.com",
