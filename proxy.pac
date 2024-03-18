@@ -78,6 +78,7 @@ var list = [
   "imgur.com",
   "apkmirror.com",
   "apkpure.com",
+  "apkpure.net",
   "ycombinator.com",
   "quora.com",
   "uptodown.com",
