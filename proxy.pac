@@ -160,6 +160,8 @@ var list = [
   "bootstrapcdn.com",
   "pub.network",
   "youmaker.com",
+  "proxifier.com",
+  "fineproxy.org",
 
   "pornhub.com",
   "phncdn.com",
