@@ -1,4 +1,5 @@
 var list = [
+  "google",
   "g.co",
   "goo.gl",
   "google.cn",
