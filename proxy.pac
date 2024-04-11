@@ -166,6 +166,7 @@ var list = [
   "pinimg.com",
   "proxifier.com",
   "fineproxy.org",
+  "1337x.to",
 
   "pornhub.com",
   "phncdn.com",
