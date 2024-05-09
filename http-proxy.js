@@ -42,11 +42,20 @@ function closeSocket() {
   }
 }
 
+// restart proxy
+function restartProxy() {
+  shell.exec('proxy', function(err, stdout, stderr) {
+    if(err) {
+      log('proxy error: ' + stderr.trim());
+    }
+  });
+}
+
 // restart socks proxy
 function restartSocksProxy() {
   shell.exec('socks-proxy', function(err, stdout, stderr) {
     if(err) {
-      log('script error: ' + stderr.trim());
+      log('socks-proxy error: ' + stderr.trim());
     }
   });
 }
@@ -161,9 +170,9 @@ function httpServer(req, res) {
 
   switch (info.pathname) {
     case '/':
-      restartSocksProxy();
+      restartProxy();
       res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end(`HTTP(s) Proxy Server ${allBySocks ? 'all by socks ' : ''}is running.`);
+      res.end(`HTTP(s) Proxy Server ${allBySocks ? 'all by socks ' : ''}has been reloaded.`);
       break;
 
     case '/proxy.pac':
