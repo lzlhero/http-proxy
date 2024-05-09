@@ -18,8 +18,5 @@
   "dependencies": {
     "socks": "^1.1.10",
     "stream-replace": "^1.0.0"
-  },
-  "devDependencies": {
-    "pm2": "^5.3.1"
   }
 }
