@@ -14,7 +14,7 @@ const httpTimeout = 5000;
 const socketTimeout = 10000;
 
 var socksProxy = {
-  ipaddress: "127.0.0.1",
+  ipaddress: '127.0.0.1',
   port: 8888,
   type: 5
 };
@@ -46,7 +46,7 @@ function closeSocket() {
 function restartProxy() {
   shell.exec('proxy', function(err, stdout, stderr) {
     if(err) {
-      log('proxy error: ' + stderr.trim());
+      console.error('proxy error: ' + stderr.trim());
     }
   });
 }
@@ -55,13 +55,13 @@ function restartProxy() {
 function restartSocksProxy() {
   shell.exec('socks-proxy', function(err, stdout, stderr) {
     if(err) {
-      log('socks-proxy error: ' + stderr.trim());
+      console.error('socks-proxy error: ' + stderr.trim());
     }
   });
 }
 
-// check socks, then start socks by script
-var execScript = (function() {
+// check socks proxy, if not restart it
+var checkSocksProxy = (function() {
   var disabled = false;
   var cooldown = 60000;
 
@@ -85,7 +85,7 @@ var execScript = (function() {
       enabled();
     })
     .on('error', function(err) {
-      log('socks5 restart with: ' + url);
+      log('socks restart with: ' + url);
 
       restartSocksProxy();
       enabled();
@@ -164,7 +164,7 @@ function listenException(up, down, isBySocks, url) {
 }
 
 
-// service a http lite server
+// service a lite http server, for http request directly, not for proxy.
 function httpServer(req, res) {
   var info = url.parse('http://' + req.headers.host + req.url);
 
@@ -196,10 +196,14 @@ var server = http.createServer()
 .on('request', function(req, down) {
   var info = url.parse(req.url);
 
-  // for http direct request, http server response.
+  /*
+   * for http request directly, not for proxy.
+   */
   if (!info.hostname) return httpServer(req, down);
 
-  // for http proxy request.
+  /*
+   * below all for http proxy request.
+   */
   var isBySocks = allBySocks || isNeedProxy(info.hostname);
 
   var options = {
@@ -231,9 +235,9 @@ var server = http.createServer()
 
     log((isBySocks ? 'error socks: ' : 'error: ') + req.url);
 
-    // execute shell script
     if (isBySocks) {
-      execScript(req.url);
+      // check socks proxy, if not restart it
+      checkSocksProxy(req.url);
     }
     down.end();
   });
@@ -250,7 +254,9 @@ var server = http.createServer()
   req.pipe(up);
 })
 .on('connect', function(req, down, head) {
-  // for ssl proxy tunnel.
+  /*
+   * below all for ssl proxy tunnel.
+   */
   var info = url.parse('http://' + req.url);
   var isBySocks = allBySocks || isNeedProxy(info.hostname);
 
@@ -266,10 +272,10 @@ var server = http.createServer()
       timeout: socketTimeout
     }, function(err, up, info) {
       if (err) {
-        log('socks5 error with: ' + req.url);
+        log('socks error with: ' + req.url);
 
-        // execute shell script
-        execScript(req.url);
+        // check socks proxy, if not restart it
+        checkSocksProxy(req.url);
         closeSocket(down);
       } else {
         // pass socket connectioin up to down
@@ -287,7 +293,7 @@ var server = http.createServer()
       listenException(up, down, isBySocks, req.url);
     }
     catch (error) {
-      console.log('catch issue');
+      console.log('catch issue with: ' + req.url);
       console.dir(info);
     }
   }
