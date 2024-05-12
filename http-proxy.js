@@ -28,8 +28,7 @@ function log(...arg) {
 
 // catch exceptions
 process.on('uncaughtException', function (err) {
-  console.error((new Date).toLocaleString() + ' uncaughtException:', err.message);
-  console.error(err.stack);
+  console.error(`uncaughtException.\nmessage: ${err.message}\nstack: ${err.stack}`);
 });
 
 
