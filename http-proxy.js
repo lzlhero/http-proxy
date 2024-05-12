@@ -42,7 +42,7 @@ function closeSocket() {
   }
 }
 
-// restart proxy
+// restart http proxy by shell script
 function restartProxy() {
   shell.exec('proxy', function(err, stdout, stderr) {
     if(err) {
@@ -51,7 +51,7 @@ function restartProxy() {
   });
 }
 
-// restart socks proxy
+// restart socks proxy by shell script
 function restartSocksProxy() {
   shell.exec('socks-proxy', function(err, stdout, stderr) {
     if(err) {
@@ -131,7 +131,7 @@ function socketsPipe(up, down, isBySocks, url) {
 }
 
 
-// add sockets exception events
+// listen sockets exception events
 // up and down stream are <net.Socket> type
 function listenException(up, down, isBySocks, url) {
   // destroy the down stream when server side close
