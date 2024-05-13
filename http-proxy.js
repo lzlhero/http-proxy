@@ -218,7 +218,14 @@ var server = http.createServer()
   var protocol = info.protocol === 'http:' ? http : https;
   var up = protocol.request(req.url, options, function(res) {
     // pass server code and headers to down stream
-    down.writeHead(res.statusCode, getHeaders(res.rawHeaders));
+    var headers = getHeaders(res.rawHeaders);
+    try {
+      down.writeHead(res.statusCode, headers);
+    }
+    catch (error) {
+      console.log('writeHead() error with: ' + req.url);
+      console.dir(headers):
+    }
 
     // pass server body to down stream
     res.pipe(down);
@@ -292,7 +299,7 @@ var server = http.createServer()
       listenException(up, down, isBySocks, req.url);
     }
     catch (error) {
-      console.log('catch issue with: ' + req.url);
+      console.log('createConnection() error with: ' + req.url);
       console.dir(info);
     }
   }
