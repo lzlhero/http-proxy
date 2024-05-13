@@ -224,7 +224,7 @@ var server = http.createServer()
     }
     catch (error) {
       console.log('writeHead() error with: ' + req.url);
-      console.dir(headers):
+      console.dir(headers);
     }
 
     // pass server body to down stream
