@@ -167,6 +167,7 @@ var list = [
   "proxifier.com",
   "fineproxy.org",
   "1337x.to",
+  "kknews.cc",
 
   "pornhub.com",
   "phncdn.com",
