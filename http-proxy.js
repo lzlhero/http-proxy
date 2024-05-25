@@ -32,8 +32,8 @@ process.on('uncaughtException', function (err) {
 });
 
 
-// close the socket resource
-function closeSocket() {
+// destroy socket resources
+function destroySocket() {
   for (var i = 0; i < arguments.length; i++) {
     if (!arguments[i].destroyed) {
       arguments[i].destroy();
@@ -80,7 +80,7 @@ var checkSocksProxy = (function() {
       host    : 'www.google.com',
       agent   : socksAgent
     }, function(res) {
-      closeSocket(socksAgent.encryptedSocket);
+      destroySocket(socksAgent.encryptedSocket);
       enabled();
     })
     .on('error', function(err) {
@@ -137,28 +137,28 @@ function listenException(up, down, isBySocks, url) {
   up
   .on('error', function(err) {
     log(`connect error${isBySocks ? ' socks' : ''}: ${url}`);
-    closeSocket(down);
+    destroySocket(down);
   })
   .on('end', function() {
-    closeSocket(down);
+    destroySocket(down);
   });
   if (!isBySocks) {
     up.setTimeout(socketTimeout, function() {
       log(`connect upstream timeout: ${url}`);
-      closeSocket(up, down);
+      destroySocket(up, down);
     });
   }
 
   // destroy the up stream when client side close
   down
   .on('error', function() {
-    closeSocket(up);
+    destroySocket(up);
   })
   .on('end', function() {
-    closeSocket(up);
+    destroySocket(up);
   })
   .setTimeout(socketTimeout, function() {
-    closeSocket(up, down);
+    destroySocket(up, down);
   });
 }
 
@@ -232,8 +232,7 @@ var server = http.createServer()
 
     res.on('end', function() {
       log(`request pass${isBySocks ? ' socks' : ''}: ${req.url}`);
-
-      up.destroy();
+      destroySocket(up);
     });
   })
   .on('error', function(err) {
@@ -251,7 +250,7 @@ var server = http.createServer()
   // abort the up stream when client side error
   down.on('close', function() {
     aborted = true;
-    up.destroy();
+    destroySocket(up);
   });
 
   log(`try request${isBySocks ? ' socks' : ''}: ${req.url}`);
@@ -282,7 +281,7 @@ var server = http.createServer()
 
         // check socks proxy, if not restart it
         checkSocksProxy(req.url);
-        closeSocket(down);
+        destroySocket(down);
       } else {
         // pass socket connectioin up to down
         socketsPipe(up, down, isBySocks, req.url);
@@ -300,11 +299,12 @@ var server = http.createServer()
     }
     catch (error) {
       log(`createConnection() error with: ${req.url}`);
+      destroySocket(down);
     }
   }
 })
-.on('clientError', function(err, socket) {
-  socket.destroy(err);
+.on('clientError', function(err, down) {
+  destroySocket(down);
 })
 .listen(8080, '0.0.0.0', function() {
   console.log(`Http(s) Proxy Server ${allBySocks ? 'all by socks ' : ''}on ${this.address().address}:${this.address().port}`);
