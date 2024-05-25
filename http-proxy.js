@@ -304,6 +304,9 @@ var server = http.createServer()
     }
   }
 })
+.on('clientError', function(err, socket) {
+  console.log(`clientError.\nmessage: ${err.message}\nstack: ${err.stack}`);
+})
 .listen(8080, '0.0.0.0', function() {
   console.log(`Http(s) Proxy Server ${allBySocks ? 'all by socks ' : ''}on ${this.address().address}:${this.address().port}`);
 });
