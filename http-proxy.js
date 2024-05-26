@@ -232,7 +232,7 @@ var server = http.createServer()
 
     res.on('end', function() {
       log(`request pass${isBySocks ? ' socks' : ''}: ${req.url}`);
-      destroySocket(up);
+      up.destroy();
     });
   })
   .on('error', function(err) {
@@ -250,7 +250,7 @@ var server = http.createServer()
   // abort the up stream when client side error
   down.on('close', function() {
     aborted = true;
-    destroySocket(up);
+    up.destroy();
   });
 
   log(`try request${isBySocks ? ' socks' : ''}: ${req.url}`);
@@ -258,6 +258,9 @@ var server = http.createServer()
   // pass client body to up stream
   req.pipe(up);
 })
+// req is <http.IncomingMessage>
+// down is <stream.Duplex>
+// head is <Buffer>
 .on('connect', function(req, down, head) {
   /*
    * below all for ssl proxy tunnel.
@@ -276,6 +279,7 @@ var server = http.createServer()
       },
       timeout: socketTimeout
     }, function(err, up, info) {
+      // up is <net.Socket>
       if (err) {
         log(`connect socks error: ${req.url}`);
 
@@ -291,6 +295,7 @@ var server = http.createServer()
   }
   else {
     try {
+      // up is <net.Socket>
       var up = net.createConnection(info.port, info.hostname, function() {
         socketsPipe(up, down, isBySocks, req.url);
       });
