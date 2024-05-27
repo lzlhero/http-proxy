@@ -156,6 +156,7 @@ function connectOnException(up, down, isBySocks, url) {
   });
   if (!isBySocks) {
     up.setTimeout(socketTimeout, function() {
+      // normal https timeout
       log(`connect upstream timeout: ${url}`);
       destroySocket(up, down);
     });
@@ -279,14 +280,15 @@ var server = http.createServer()
       if (err) {
         log(`connect socks error: ${req.url}`);
 
-        // check socks proxy, if not restart it
+        // proxy https timeout. check socks proxy, if not restart it
         checkSocksProxy(req.url);
         destroySocket(down);
       } else {
-
-        // proxy https process, pass socket connection up to down
-        // up is <net.Socket> <stream.Duplex> <stream.Readable> <stream.Writable>
+        // listen 'connect' exception events
         connectOnException(up, down, isBySocks, req.url);
+
+        // proxy https pipe up to down
+        // up is <net.Socket> <stream.Duplex> <stream.Readable> <stream.Writable>
         connectPipe(up, down, isBySocks, req.url);
       }
     });
@@ -294,12 +296,13 @@ var server = http.createServer()
   else {
     try {
       var up = net.createConnection(info.port, info.hostname, function() {
-
-        // normal https process, pass socket connection up to down
+        // normal https pipe up to down
         // up is <net.Socket> <stream.Duplex> <stream.Readable> <stream.Writable>
-        connectOnException(up, down, isBySocks, req.url);
         connectPipe(up, down, isBySocks, req.url);
       });
+
+      // listen 'connect' exception events
+      connectOnException(up, down, isBySocks, req.url);
     }
     catch (error) {
       log(`createConnection() error with: ${req.url}`);
