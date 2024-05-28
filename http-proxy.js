@@ -312,8 +312,8 @@ var server = http.createServer()
   destroySocket(down);
 })
 .listen(8080, '0.0.0.0', function() {
-  var address = this.address();
-  console.log(`Http(s) Proxy Server${allBySocks ? ' all by socks' : ''} on ${address.address}:${address.port}`);
+  var { address, port } = this.address();
+  console.log(`Http(s) Proxy Server${allBySocks ? ' all by socks' : ''} on ${address}:${port}`);
 });
 
 // important, set inactivity http timeout
