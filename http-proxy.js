@@ -19,6 +19,7 @@ var socksProxy = {
   type: 5
 };
 
+
 // console log helper
 function log(...arg) {
   if (showLog) {
@@ -26,7 +27,8 @@ function log(...arg) {
   }
 }
 
-// catch exceptions
+
+// listen exception without try catch
 process.on('uncaughtException', function (err) {
   console.error(`uncaughtException.\nmessage: ${err.message}\nstack: ${err.stack}`);
 });
@@ -41,23 +43,26 @@ function destroySocket() {
   }
 }
 
+
 // restart http proxy by shell script
 function restartProxy() {
   shell.exec('proxy', function(err, stdout, stderr) {
     if(err) {
-      console.error('proxy error: ' + stderr.trim());
+      console.error(`proxy error: ${stderr.trim()}`);
     }
   });
 }
+
 
 // restart socks proxy by shell script
 function restartSocksProxy() {
   shell.exec('socks-proxy', function(err, stdout, stderr) {
     if(err) {
-      console.error('socks-proxy error: ' + stderr.trim());
+      console.error(`socks-proxy error: ${stderr.trim()}`);
     }
   });
 }
+
 
 // check socks proxy, if not restart it
 var checkSocksProxy = (function() {
@@ -117,9 +122,10 @@ function getHeaders(rawHeaders) {
   return headers;
 }
 
+
 // service a lite http server, for http request directly, not for proxy.
 function httpServer(req, res) {
-  var info = url.parse('http://' + req.headers.host + req.url);
+  var info = url.parse(`http://${req.headers.host}${req.url}`);
 
   switch (info.pathname) {
     case '/':
@@ -262,7 +268,7 @@ var server = http.createServer()
   /*
    * below all for https connect proxy.
    */
-  var { hostname, port } = url.parse('https://' + req.url);
+  var { hostname, port } = url.parse(`https://${req.url}`);
   var isBySocks = allBySocks || isNeedProxy(hostname);
 
   log(`try connect${isBySocks ? ' socks' : ''}: ${req.url}`);
@@ -315,6 +321,7 @@ var server = http.createServer()
   var { address, port } = this.address();
   console.log(`Http(s) Proxy Server${allBySocks ? ' all by socks' : ''} on ${address}:${port}`);
 });
+
 
 // important, set inactivity http timeout
 server.timeout = httpTimeout;
