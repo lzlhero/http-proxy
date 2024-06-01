@@ -12,8 +12,7 @@ const showLog = false;
 const allBySocks = false;
 const httpTimeout = 5000;
 const socketTimeout = 10000;
-
-var socksProxy = {
+const socksProxy = {
   ipaddress: '127.0.0.1',
   port: 8888,
   type: 5
