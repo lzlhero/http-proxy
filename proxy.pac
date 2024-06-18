@@ -42,6 +42,8 @@ var list = [
   "fbsbx.com",
   "instagram.com",
   "cdninstagram.com",
+  "whatsapp.com",
+  "whatsapp.net",
   "t.co",
   "x.com",
   "twitter.com",
