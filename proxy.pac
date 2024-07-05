@@ -188,10 +188,18 @@ var list = [
   "shemalez.com",
   "youporn.com",
   "xnxx.com",
+  "xnxx.com.se",
+  "xnxx.health",
   "thisvid.com",
   "redgifs.com",
   "sex.com",
   "thumbzilla.com",
+  "vjav.com",
+  "pornjam.com",
+  "cumlouder.com",
+  "missav.com",
+  "pornwhite.com",
+  "youjizz.com",
 ];
 
 
