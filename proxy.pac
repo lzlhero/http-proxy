@@ -50,6 +50,7 @@ var list = [
   "twitter.com",
   "twimg.com",
   "cms-twdigitalassets.com",
+  "pscp.tv",
   "redd.it",
   "reddit.com",
   "redditstatic.com",

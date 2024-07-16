@@ -8,7 +8,7 @@ var shell = require('child_process');
 var replace = require('stream-replace');
 var isNeedProxy = require('./proxy.pac');
 
-const showLog = false;
+const showLog = true;
 const allBySocks = false;
 const httpTimeout = 5000;
 const socketTimeout = 10000;
