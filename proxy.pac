@@ -49,6 +49,7 @@ var list = [
   "x.com",
   "twitter.com",
   "twimg.com",
+  "cms-twdigitalassets.com",
   "redd.it",
   "reddit.com",
   "redditstatic.com",
