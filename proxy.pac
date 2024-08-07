@@ -173,6 +173,7 @@ var list = [
   "fineproxy.org",
   "1337x.to",
   "kknews.cc",
+  "inty.news",
 
   "pornhub.com",
   "phncdn.com",
