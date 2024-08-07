@@ -68,6 +68,7 @@ var list = [
   "flickr.com",
   "tumblr.com",
   "mozilla.org",
+  "godaddy.com",
 
   "wikipedia.org",
   "wikimedia.org",
