@@ -19,18 +19,14 @@ const socksProxy = {
 };
 
 
+try {
+
 // console log helper
 function log(...arg) {
   if (showLog) {
     console.log(...arg);
   }
 }
-
-
-// listen exception without try catch
-process.on('uncaughtException', function (err) {
-  console.error(`uncaughtException.\nmessage: ${err.message}\nstack: ${err.stack}`);
-});
 
 
 // destroy socket resources
@@ -193,6 +189,12 @@ function connectPipe(up, down, isBySocks, url) {
 }
 
 
+// listen exception without try catch
+process.on('uncaughtException', function (err) {
+  console.error(`uncaughtException.\nmessage: ${err.message}\nstack: ${err.stack}`);
+});
+
+
 // http server defination
 var server = http.createServer()
 // req is <http.IncomingMessage> <stream.Readable>
@@ -324,3 +326,9 @@ var server = http.createServer()
 
 // important, set inactivity http timeout
 server.timeout = httpTimeout;
+
+}
+catch (error) {
+console.log('Big Try-Catch');
+console.dir(error);
+}
