@@ -19,8 +19,6 @@ const socksProxy = {
 };
 
 
-try {
-
 // console log helper
 function log(...arg) {
   if (showLog) {
@@ -189,17 +187,13 @@ function connectPipe(up, down, isBySocks, url) {
 }
 
 
-// listen exception without try catch
-process.on('uncaughtException', function (err) {
-  console.error(`uncaughtException.\nmessage: ${err.message}\nstack: ${err.stack}`);
-});
-
-
 // http server defination
 var server = http.createServer()
 // req is <http.IncomingMessage> <stream.Readable>
 // down is <http.ServerResponse> <Stream>
 .on('request', function(req, down) {
+try {
+
   var { hostname, protocol } = url.parse(req.url);
 
   /*
@@ -261,11 +255,17 @@ var server = http.createServer()
 
   // pass client body to up stream
   req.pipe(up);
+
+}
+catch (err) {
+  console.error(`request Try-Catch.\nmessage: ${err.message}\nstack: ${err.stack}`);
+}
 })
 // req is <http.IncomingMessage> <stream.Readable>
 // down is <net.Socket> <stream.Duplex> <stream.Readable> <stream.Writable>
 // head is <Buffer>
 .on('connect', function(req, down, head) {
+try {
   /*
    * below all for https connect proxy.
    */
@@ -314,6 +314,10 @@ var server = http.createServer()
     // listen 'connect' exception events
     connectOnException(up, down, isBySocks, req.url);
   }
+}
+catch (err) {
+  console.error(`connect Try-Catch.\nmessage: ${err.message}\nstack: ${err.stack}`);
+}
 })
 .on('clientError', function(err, down) {
   destroySocket(down);
@@ -327,8 +331,8 @@ var server = http.createServer()
 // important, set inactivity http timeout
 server.timeout = httpTimeout;
 
-}
-catch (error) {
-console.log('Big Try-Catch');
-console.dir(error);
-}
+
+// listen exception without try catch
+process.on('uncaughtException', function (err) {
+  console.error(`uncaughtException.\nmessage: ${err.message}\nstack: ${err.stack}`);
+});
