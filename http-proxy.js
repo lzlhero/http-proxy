@@ -192,8 +192,6 @@ var server = http.createServer()
 // req is <http.IncomingMessage> <stream.Readable>
 // down is <http.ServerResponse> <Stream>
 .on('request', function(req, down) {
-try {
-
   var { hostname, protocol } = url.parse(req.url);
 
   /*
@@ -255,17 +253,11 @@ try {
 
   // pass client body to up stream
   req.pipe(up);
-
-}
-catch (err) {
-  console.error(`request Try-Catch.\nmessage: ${err.message}\nstack: ${err.stack}`);
-}
 })
 // req is <http.IncomingMessage> <stream.Readable>
 // down is <net.Socket> <stream.Duplex> <stream.Readable> <stream.Writable>
 // head is <Buffer>
 .on('connect', function(req, down, head) {
-try {
   /*
    * below all for https connect proxy.
    */
@@ -314,10 +306,6 @@ try {
     // listen 'connect' exception events
     connectOnException(up, down, isBySocks, req.url);
   }
-}
-catch (err) {
-  console.error(`connect Try-Catch.\nmessage: ${err.message}\nstack: ${err.stack}`);
-}
 })
 .on('clientError', function(err, down) {
   destroySocket(down);
