@@ -4,8 +4,8 @@
   "exec_mode": "cluster",
   "instances": 1,
   "merge_logs": true,
-  "log_file": "http-proxy.log",
-  "out_file": "NULL",
+  "log_file": "NULL",
+  "out_file": "http-proxy.log",
   "error_file": "NULL",
   "log_date_format" : "YYYY-MM-DD HH:mm:ss",
   "env": {

@@ -41,7 +41,7 @@ function destroySocket() {
 function restartProxy() {
   shell.exec('proxy', function(err, stdout, stderr) {
     if(err) {
-      console.error(`proxy error: ${stderr.trim()}`);
+      console.log(`proxy error: ${stderr.trim()}`);
     }
   });
 }
@@ -51,7 +51,7 @@ function restartProxy() {
 function restartSocksProxy() {
   shell.exec('socks-proxy', function(err, stdout, stderr) {
     if(err) {
-      console.error(`socks-proxy error: ${stderr.trim()}`);
+      console.log(`socks-proxy error: ${stderr.trim()}`);
     }
   });
 }
@@ -322,5 +322,9 @@ server.timeout = httpTimeout;
 
 // listen exception without try catch
 process.on('uncaughtException', function (err) {
-  console.error(`uncaughtException.\nmessage: ${err.message}\nstack: ${err.stack}`);
+  if (err.code === 'ECONNABORTED') {
+    return;
+  }
+
+  console.log(`uncaughtException.\ncode: ${err.code}\nmessage: ${err.message}\nstack: ${err.stack}`);
 });
