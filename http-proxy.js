@@ -8,7 +8,6 @@ var shell = require('child_process');
 var replace = require('stream-replace');
 var isNeedProxy = require('./proxy.pac');
 
-const showLog = false;
 const allBySocks = false;
 const httpTimeout = 5000;
 const socketTimeout = 10000;
@@ -21,7 +20,7 @@ const socksProxy = {
 
 // console log helper
 function log(...arg) {
-  if (showLog) {
+  if (process.env.HTTP_PROXY_LOG) {
     console.log(...arg);
   }
 }

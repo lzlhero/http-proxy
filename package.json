@@ -4,7 +4,7 @@
   "description": "",
   "main": "http-proxy.js",
   "scripts": {
-    "debug": "node http-proxy.js",
+    "debug": "cross-env HTTP_PROXY_LOG=true node http-proxy.js",
     "start": "pm2 start pm2.json",
     "stop": "pm2 delete pm2.json",
     "reload": "pm2 reload pm2.json"
@@ -15,5 +15,8 @@
   "dependencies": {
     "socks": "^1.1.10",
     "stream-replace": "^1.0.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }
