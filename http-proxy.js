@@ -81,7 +81,7 @@ var checkSocksProxy = (function() {
       enabled();
     })
     .on('error', function(err) {
-      log(`socks restart with: ${url}`);
+      log(`+ socks #: ${err.code}: ${url}`);
 
       restartSocksProxy();
       enabled();
@@ -123,7 +123,7 @@ function httpServer(req, res) {
     case '/':
       restartProxy();
       res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end(`HTTP(s) Proxy Server${allBySocks ? ' all by socks' : ''} has been reloaded.`);
+      res.end(`HTTP Proxy Server${allBySocks ? ' all by socks' : ''} has been reloaded.`);
       break;
 
     case '/proxy.pac':
@@ -143,32 +143,34 @@ function httpServer(req, res) {
 // listen 'connect' sockets exception events
 // up|down are <net.Socket> <stream.Duplex> <stream.Readable> <stream.Writable>
 function connectOnException(up, down, isBySocks, url) {
-  // destroy the down stream when server side close
+  // server: destroy the down stream when server side close
   up
-  .on('error', function(err) {
-    log(`connect error${isBySocks ? ' socks' : ''}: ${url}`);
+  .on('end', function() {
     destroySocket(down);
   })
-  .on('end', function() {
+  .on('error', function(err) {
+    log(`${isBySocks ? '*' : ' '} connect <X: ${err.code}: ${url}`);
     destroySocket(down);
   });
   if (!isBySocks) {
     up.setTimeout(socketTimeout, function() {
-      // normal https timeout
-      log(`connect upstream timeout: ${url}`);
+      // normal https up stream timeout
+      log(`  connect <?: ${url}`);
       destroySocket(up, down);
     });
   }
 
-  // destroy the up stream when client side close
+  // client: destroy the up stream when client side close
   down
-  .on('error', function() {
-    destroySocket(up);
-  })
   .on('end', function() {
     destroySocket(up);
   })
+  .on('error', function(err) {
+    log(`${isBySocks ? '*' : ' '} connect >X: ${err.code}: ${url}`);
+    destroySocket(up);
+  })
   .setTimeout(socketTimeout, function() {
+    log(`${isBySocks ? '*' : ' '} connect >?: ${url}`);
     destroySocket(up, down);
   });
 }
@@ -182,7 +184,7 @@ function connectPipe(up, down, isBySocks, url) {
   down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
   down.pipe(up).pipe(down);
 
-  log(`connect pass${isBySocks ? ' socks' : ''}: ${url}`);
+  log(`${isBySocks ? '*' : ' '} connect <<: ${url}`);
 }
 
 
@@ -226,14 +228,14 @@ var server = http.createServer()
     res.pipe(down);
 
     res.on('end', function() {
-      log(`request pass${isBySocks ? ' socks' : ''}: ${req.url}`);
+      log(`${isBySocks ? '*' : ' '} request <<: ${req.url}`);
       up.destroy();
     });
   })
   .on('error', function(err) {
     if (aborted) return;
 
-    log(`request error${isBySocks ? ' socks' : ''}: ${req.url}`);
+    log(`${isBySocks ? '*' : ' '} request XX: ${err.code}: ${req.url}`);
 
     if (isBySocks) {
       // check socks proxy, if not restart it
@@ -248,7 +250,7 @@ var server = http.createServer()
     up.destroy();
   });
 
-  log(`try request${isBySocks ? ' socks' : ''}: ${req.url}`);
+  log(`${isBySocks ? '*' : ' '} request >>: ${req.url}`);
 
   // pass client body to up stream
   req.pipe(up);
@@ -263,7 +265,7 @@ var server = http.createServer()
   var { hostname, port } = url.parse(`https://${req.url}`);
   var isBySocks = allBySocks || isNeedProxy(hostname);
 
-  log(`try connect${isBySocks ? ' socks' : ''}: ${req.url}`);
+  log(`${isBySocks ? '*' : ' '} connect >>: ${req.url}`);
 
   if (isBySocks) {
     socks.createConnection({
@@ -275,7 +277,7 @@ var server = http.createServer()
       timeout: socketTimeout
     }, function(err, up, info) {
       if (err) {
-        log(`connect socks error: ${req.url}`);
+        log(`+ socks X: ${err.code}: ${req.url}`);
 
         // socks proxy timeout. check it, if not restart it
         checkSocksProxy(req.url);
@@ -311,7 +313,7 @@ var server = http.createServer()
 })
 .listen(8080, '0.0.0.0', function() {
   var { address, port } = this.address();
-  console.log(`Http(s) Proxy Server${allBySocks ? ' all by socks' : ''} on ${address}:${port}`);
+  console.log(`Http Proxy Server${allBySocks ? ' all by socks' : ''} on ${address}:${port}`);
 });
 
 

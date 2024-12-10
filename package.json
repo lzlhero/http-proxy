@@ -1,7 +1,7 @@
 {
   "name": "http-proxy",
   "version": "1.0.0",
-  "description": "",
+  "description": "http proxy - which is support socks stream conversion and proxy.pac",
   "main": "http-proxy.js",
   "scripts": {
     "debug": "cross-env HTTP_PROXY_LOG=true node http-proxy.js",
