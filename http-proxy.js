@@ -8,9 +8,8 @@ var shell = require('child_process');
 var replace = require('stream-replace');
 var isNeedProxy = require('./proxy.pac');
 
-const allBySocks = false;
-const httpTimeout = 5000;
 const socketTimeout = 10000;
+const allBySocks = false;
 const socksProxy = {
   ipaddress: '127.0.0.1',
   port: 8888,
@@ -26,18 +25,18 @@ function log(...arg) {
 }
 
 
-// destroy socket resources
-function destroySocket() {
+// close socket resources
+function closeSocket() {
   for (var i = 0; i < arguments.length; i++) {
-    if (!arguments[i].destroyed) {
-      arguments[i].destroy();
+    if (arguments[i].writable) {
+      arguments[i].end();
     }
   }
 }
 
 
 // restart http proxy by shell script
-function restartProxy() {
+function restartHttpProxy() {
   shell.exec('proxy', function(err, stdout, stderr) {
     if(err) {
       console.log(`proxy error: ${stderr.trim()}`);
@@ -77,11 +76,11 @@ var checkSocksProxy = (function() {
       host    : 'www.google.com',
       agent   : socksAgent
     }, function(res) {
-      destroySocket(socksAgent.encryptedSocket);
+      closeSocket(socksAgent.encryptedSocket);
       enabled();
     })
     .on('error', function(err) {
-      log(`+ socks #: ${err.code}: ${url}`);
+      log(`$socks-proxy: [${err.message}]: ${url}`);
 
       restartSocksProxy();
       enabled();
@@ -90,8 +89,8 @@ var checkSocksProxy = (function() {
 })();
 
 
-// get headers object from rawHeaders
-function getHeaders(rawHeaders) {
+// purge headers object from rawHeaders
+function purgeHeaders(rawHeaders) {
   var headers = {}, name, value, type;
 
   for (var i = 0; i < rawHeaders.length; i = i + 2) {
@@ -115,15 +114,19 @@ function getHeaders(rawHeaders) {
 }
 
 
-// service a lite http server, for http request directly, not for proxy.
+/*
+  service a lite http server, which is for client request without proxy.
+    req is client request message <http.IncomingMessage>
+    res is server response stream <http.ServerResponse>
+*/
 function httpServer(req, res) {
   var info = url.parse(`http://${req.headers.host}${req.url}`);
 
   switch (info.pathname) {
     case '/':
-      restartProxy();
+      restartHttpProxy();
       res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end(`HTTP Proxy Server${allBySocks ? ' all by socks' : ''} has been reloaded.`);
+      res.end(`HTTP Proxy${allBySocks ? ' all by socks' : ''} has been reloaded.`);
       break;
 
     case '/proxy.pac':
@@ -140,185 +143,197 @@ function httpServer(req, res) {
 }
 
 
-// listen 'connect' sockets exception events
-// up|down are <net.Socket> <stream.Duplex> <stream.Readable> <stream.Writable>
-function connectOnException(up, down, isBySocks, url) {
-  // server: destroy the down stream when server side close
-  up
-  .on('end', function() {
-    destroySocket(down);
-  })
-  .on('error', function(err) {
-    log(`${isBySocks ? '*' : ' '} connect <X: ${err.code}: ${url}`);
-    destroySocket(down);
-  });
-  if (!isBySocks) {
-    up.setTimeout(socketTimeout, function() {
-      // normal https up stream timeout
-      log(`  connect <?: ${url}`);
-      destroySocket(up, down);
-    });
-  }
+/*
+  pipe 'connect' sockets' stream
+    clientSocket, serverSocket are sockets <net.Socket>
+    head is buffer <Buffer>
+*/
+function connectPipe(clientSocket, serverSocket, head, isBySocks, url) {
+  if (!clientSocket.writable || !serverSocket.writable) return;
 
-  // client: destroy the up stream when client side close
-  down
-  .on('end', function() {
-    destroySocket(up);
-  })
-  .on('error', function(err) {
-    log(`${isBySocks ? '*' : ' '} connect >X: ${err.code}: ${url}`);
-    destroySocket(up);
-  })
-  .setTimeout(socketTimeout, function() {
-    log(`${isBySocks ? '*' : ' '} connect >?: ${url}`);
-    destroySocket(up, down);
-  });
-}
-
-
-// pipe 'connect' sockets stream
-// up|down are <net.Socket> <stream.Duplex> <stream.Readable> <stream.Writable>
-function connectPipe(up, down, isBySocks, url) {
-  if (!down.writable) return;
-
-  down.write('HTTP/1.1 200 Connection Established\r\n\r\n');
-  down.pipe(up).pipe(down);
+  clientSocket.write('HTTP/1.1 200 Connection Established\r\n\r\n');
+  serverSocket.write(head);
+  serverSocket.pipe(clientSocket);
+  clientSocket.pipe(serverSocket);
 
   log(`${isBySocks ? '*' : ' '} connect <<: ${url}`);
 }
 
 
-// http server defination
-var server = http.createServer()
-// req is <http.IncomingMessage> <stream.Readable>
-// down is <http.ServerResponse> <Stream>
-.on('request', function(req, down) {
-  var { hostname, protocol } = url.parse(req.url);
-
+/*
+  listen 'connect' sockets events
+   clientSocket, serverSocket are sockets <net.Socket>
+*/
+function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
+  // server socket closed events
+  serverSocket
+  .on('end', function() {
+    //log(`${isBySocks ? '*' : ' '} connect <-: ${url}`);
+    closeSocket(clientSocket);
+  })
+  .on('error', function(err) {
+    log(`${isBySocks ? '*' : ' '} connect <X: [${err.message}] ${url}`);
+    closeSocket(clientSocket);
+  })
+  .on('close', function() {
+    log(`${isBySocks ? '*' : ' '} connect <C: ${url}`);
+    closeSocket(clientSocket);
+  });
   /*
-   * for http request directly, not for proxy.
-   */
-  if (!hostname) return httpServer(req, down);
+  serverSocket.setTimeout(socketTimeout, function() {
+    log(`${isBySocks ? '*' : ' '} connect <?: ${url}`);
+    closeSocket(clientSocket, serverSocket);
+  });
+  */
 
+  // client socket closed events
+  clientSocket
+  .on('end', function() {
+    //log(`${isBySocks ? '*' : ' '} connect >-: ${url}`);
+    closeSocket(serverSocket);
+  })
+  .on('error', function(err) {
+    log(`${isBySocks ? '*' : ' '} connect >X: [${err.message}] ${url}`);
+    closeSocket(serverSocket);
+  })
+  .on('close', function() {
+    log(`${isBySocks ? '*' : ' '} connect >C: ${url}`);
+    closeSocket(serverSocket);
+  });
   /*
-   * below all for http(s) request proxy.
-   */
-  var aborted = false;
+  clientSocket.setTimeout(socketTimeout, function() {
+    log(`${isBySocks ? '*' : ' '} connect >?: ${url}`);
+    closeSocket(clientSocket, serverSocket);
+  });
+  */
+}
+
+
+// httpProxy is <http.Server> <net.Server>
+var httpProxy = http.createServer()
+// clientRequest is client request message <http.IncomingMessage>
+// proxyResponse is server response stream <http.ServerResponse>
+.on('request', function(clientRequest, proxyResponse) {
+  var { hostname, protocol } = url.parse(clientRequest.url);
+
+  /* for http request directly, not for proxy */
+  if (!hostname) return httpServer(clientRequest, proxyResponse);
+
+  /* below for http(s) "request" proxy */
   var isBySocks = allBySocks || isNeedProxy(hostname);
   var options = {
     agent  : isBySocks ? new socks.Agent({proxy: socksProxy}, false, false) : null,
-    headers: getHeaders(req.rawHeaders),
-    method : req.method
+    headers: purgeHeaders(clientRequest.rawHeaders),
+    method : clientRequest.method
   };
 
-  // res stream is a <http.IncomingMessage> <stream.Readable>
-  // up stream is a <http.ClientRequest> <Stream>
-  var up = (protocol === 'http:' ? http : https).request(req.url, options, function(res) {
-    // pass server code and headers to down stream
-    var headers = getHeaders(res.rawHeaders);
+  // proxyRequest is client request stream <http.ClientRequest>
+  // serverResponse is server response message <http.IncomingMessage>
+  var proxyRequest = (protocol === 'http:' ? http : https)
+      .request(clientRequest.url, options, function(serverResponse) {
+    // transfer server code and headers to proxyResponse
+    var headers = purgeHeaders(serverResponse.rawHeaders);
     try {
-      down.writeHead(res.statusCode, headers);
+      proxyResponse.writeHead(serverResponse.statusCode, headers);
     }
-    catch (error) {
-      console.log(`writeHead() error with: ${req.url}`);
+    catch (err) {
+      console.log(`writeHead() error with: ${clientRequest.url}`);
       console.dir(headers);
     }
 
-    // pass server body to down stream
-    res.pipe(down);
-
-    res.on('end', function() {
-      log(`${isBySocks ? '*' : ' '} request <<: ${req.url}`);
-      up.destroy();
+    // server response end
+    serverResponse.on('end', function() {
+      log(`${isBySocks ? '*' : ' '} request <<: ${clientRequest.url}`);
+      // proxyRequest.socket and serverResponse.socket is equal.
+      closeSocket(proxyRequest.socket);
     });
+
+    // transfer server response to proxy response
+    serverResponse.pipe(proxyResponse);
   })
+  // for both noram/socks request error
   .on('error', function(err) {
-    if (aborted) return;
+    log(`${isBySocks ? '*' : ' '} request XX: [${err.message}]: ${clientRequest.url}`);
 
-    log(`${isBySocks ? '*' : ' '} request XX: ${err.code}: ${req.url}`);
-
+    // socks proxy error, check socks proxy
     if (isBySocks) {
-      // check socks proxy, if not restart it
-      checkSocksProxy(req.url);
+      checkSocksProxy(clientRequest.url);
     }
-    down.end();
+
+    // destroy stream without socket FIN
+    proxyResponse.destroy();
+    proxyRequest.destroy();
   });
 
-  // abort the up stream when client side error
-  down.on('close', function() {
-    aborted = true;
-    up.destroy();
-  });
-
-  log(`${isBySocks ? '*' : ' '} request >>: ${req.url}`);
-
-  // pass client body to up stream
-  req.pipe(up);
+  // transfer client request to proxy request
+  log(`${isBySocks ? '*' : ' '} request >>: ${clientRequest.url}`);
+  clientRequest.pipe(proxyRequest);
 })
-// req is <http.IncomingMessage> <stream.Readable>
-// down is <net.Socket> <stream.Duplex> <stream.Readable> <stream.Writable>
-// head is <Buffer>
-.on('connect', function(req, down, head) {
-  /*
-   * below all for https connect proxy.
-   */
-  var { hostname, port } = url.parse(`https://${req.url}`);
+// clientRequest is client request message <http.IncomingMessage>
+// clientSocket is client socket <net.Socket>
+// head is buffer <Buffer>
+.on('connect', function(clientRequest, clientSocket, head) {
+
+  /* below for https "connect" proxy. */
+  var { hostname, port } = url.parse(`https://${clientRequest.url}`);
   var isBySocks = allBySocks || isNeedProxy(hostname);
 
-  log(`${isBySocks ? '*' : ' '} connect >>: ${req.url}`);
+  log(`${isBySocks ? '*' : ' '} connect >>: ${clientRequest.url}`);
 
+  // for socks connection
   if (isBySocks) {
-    socks.createConnection({
+    var options = {
       proxy: socksProxy,
       target: {
         host: hostname,
         port: port
       },
       timeout: socketTimeout
-    }, function(err, up, info) {
+    };
+    socks.createConnection(options, function(err, serverSocket, info) {
+      // socks proxy error, check socks proxy
       if (err) {
-        log(`+ socks X: ${err.code}: ${req.url}`);
+        log(`* connect XX: [${err.message}]: ${clientRequest.url}`);
 
-        // socks proxy timeout. check it, if not restart it
-        checkSocksProxy(req.url);
-        destroySocket(down);
-      } else {
-        // socks https pipe up to down
-        // listen 'connect' exception events
-        connectOnException(up, down, isBySocks, req.url);
-        // up is <net.Socket> <stream.Duplex> <stream.Readable> <stream.Writable>
-        connectPipe(up, down, isBySocks, req.url);
+        checkSocksProxy(clientRequest.url);
+        closeSocket(clientSocket);
+        return;
       }
+
+      // listen 'connect' sockets events
+      connectPipeEvents(clientSocket, serverSocket, isBySocks, clientRequest.url);
+      // serverSocket is server socket <net.Socket>
+      connectPipe(clientSocket, serverSocket, head, isBySocks, clientRequest.url);
     });
   }
+  // for noraml connection
   else {
     try {
-      // normal https pipe up to down
-      // up is <net.Socket> <stream.Duplex> <stream.Readable> <stream.Writable>
-      var up = net.createConnection(port, hostname, function() {
-        connectPipe(up, down, isBySocks, req.url);
+      var serverSocket = net.createConnection(port, hostname, function() {
+        // serverSocket is server socket <net.Socket>
+        connectPipe(clientSocket, serverSocket, head, isBySocks, clientRequest.url);
       });
     }
-    catch (error) {
-      destroySocket(down);
+    catch (err) {
+      closeSocket(clientSocket);
       return;
     }
 
-    // listen 'connect' exception events
-    connectOnException(up, down, isBySocks, req.url);
+    // listen 'connect' sockets events
+    connectPipeEvents(clientSocket, serverSocket, isBySocks, clientRequest.url);
   }
 })
-.on('clientError', function(err, down) {
-  destroySocket(down);
+.on('clientError', function(err, clientSocket) {
+  closeSocket(clientSocket);
 })
 .listen(8080, '0.0.0.0', function() {
   var { address, port } = this.address();
-  console.log(`Http Proxy Server${allBySocks ? ' all by socks' : ''} on ${address}:${port}`);
+  console.log(`HTTP Proxy${allBySocks ? ' all by socks' : ''} on ${address}:${port}`);
 });
 
 
-// important, set inactivity http timeout
-server.timeout = httpTimeout;
+// set client timeout, same as below
+//httpProxy.timeout = socketTimeout;
 
 
 // listen exception without try catch
