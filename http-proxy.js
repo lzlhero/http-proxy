@@ -3,7 +3,8 @@ var net = require('net');
 var url = require('url');
 var http = require('http');
 var https = require('https');
-var socks = require('socks');
+var socksClient = require('socks').SocksClient;
+var socksProxyAgent = require('socks-proxy-agent').SocksProxyAgent;
 var shell = require('child_process');
 var replace = require('stream-replace');
 var isNeedProxy = require('./proxy.pac');
@@ -11,10 +12,11 @@ var isNeedProxy = require('./proxy.pac');
 const socketTimeout = 10000;
 const allBySocks = false;
 const socksProxy = {
-  ipaddress: '127.0.0.1',
+  host: '127.0.0.1',
   port: 8888,
   type: 5
 };
+const socksProxyAgentURI = `socks://${socksProxy.host}:${socksProxy.port}`;
 
 
 // console log helper
@@ -70,13 +72,12 @@ var checkSocksProxy = (function() {
     if (disabled) return;
     disabled = true;
 
-    var socksAgent = new socks.Agent({proxy: socksProxy}, true, false);
+    var socksAgent = new socksProxyAgent(socksProxyAgentURI, { timeout: socketTimeout });
     http.get({
       port    : 443,
       host    : 'www.google.com',
       agent   : socksAgent
     }, function(res) {
-      closeSocket(socksAgent.encryptedSocket);
       enable();
     })
     .on('error', function(err) {
@@ -222,7 +223,7 @@ var httpProxy = http.createServer()
   /* for http/https 'request' proxy */
   var isBySocks = allBySocks || isNeedProxy(hostname);
   var options = {
-    agent  : isBySocks ? new socks.Agent({proxy: socksProxy}, false, false) : null,
+    agent  : isBySocks ? new socksProxyAgent(socksProxyAgentURI, { timeout: socketTimeout }) : null,
     headers: purgeHeaders(clientRequest.rawHeaders),
     method : clientRequest.method
   };
@@ -285,13 +286,14 @@ var httpProxy = http.createServer()
   if (isBySocks) {
     var options = {
       proxy: socksProxy,
-      target: {
+      destination: {
         host: hostname,
         port: port
       },
+      command: 'connect',
       timeout: socketTimeout
     };
-    socks.createConnection(options, function(err, serverSocket, info) {
+    socksClient.createConnection(options, function(err, info) {
       // socks 'connect' proxy error
       if (err) {
         log(`* connect XX: [${err.message}]: ${clientRequest.url}`);
@@ -301,6 +303,7 @@ var httpProxy = http.createServer()
         return;
       }
 
+      var serverSocket = info.socket;
       // listen 'connect' sockets events
       connectPipeEvents(clientSocket, serverSocket, isBySocks, clientRequest.url);
       // serverSocket is server socket <net.Socket>

@@ -1,6 +1,6 @@
 {
   "name": "http-proxy",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "http proxy - which is support socks stream conversion and proxy.pac",
   "main": "http-proxy.js",
   "scripts": {
@@ -13,7 +13,8 @@
   "author": "lzlhero",
   "license": "ISC",
   "dependencies": {
-    "socks": "^1.1.10",
+    "socks": "^2.8.3",
+    "socks-proxy-agent": "^8.0.5",
     "stream-replace": "^1.0.0"
   },
   "devDependencies": {
