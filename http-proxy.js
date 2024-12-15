@@ -60,7 +60,7 @@ var checkSocksProxy = (function() {
   var disabled = false;
   var cooldown = 60000;
 
-  function enabled() {
+  function enable() {
     setTimeout(function() {
       disabled = false;
     }, cooldown);
@@ -77,13 +77,13 @@ var checkSocksProxy = (function() {
       agent   : socksAgent
     }, function(res) {
       closeSocket(socksAgent.encryptedSocket);
-      enabled();
+      enable();
     })
     .on('error', function(err) {
       log(`$socks-proxy: [${err.message}]: ${url}`);
 
       restartSocksProxy();
-      enabled();
+      enable();
     });
   };
 })();
@@ -115,7 +115,7 @@ function purgeHeaders(rawHeaders) {
 
 
 /*
-  service a lite http server, which is for client request without proxy.
+  service a lite http server, which is for client directly without proxy.
     req is client request message <http.IncomingMessage>
     res is server response stream <http.ServerResponse>
 */
@@ -144,8 +144,8 @@ function httpServer(req, res) {
 
 
 /*
-  pipe 'connect' sockets' stream
-    clientSocket, serverSocket are sockets <net.Socket>
+  pipe 'connect' sockets stream
+    clientSocket and serverSocket are sockets <net.Socket>
     head is buffer <Buffer>
 */
 function connectPipe(clientSocket, serverSocket, head, isBySocks, url) {
@@ -162,7 +162,7 @@ function connectPipe(clientSocket, serverSocket, head, isBySocks, url) {
 
 /*
   listen 'connect' sockets events
-   clientSocket, serverSocket are sockets <net.Socket>
+   clientSocket and serverSocket are sockets <net.Socket>
 */
 function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
   // server socket closed events
@@ -209,17 +209,17 @@ function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
 }
 
 
-// httpProxy is <http.Server> <net.Server>
+// httpProxy is <http.Server>
 var httpProxy = http.createServer()
 // clientRequest is client request message <http.IncomingMessage>
 // proxyResponse is server response stream <http.ServerResponse>
 .on('request', function(clientRequest, proxyResponse) {
   var { hostname, protocol } = url.parse(clientRequest.url);
 
-  /* for http request directly, not for proxy */
+  /* for client 'request' directly without proxy */
   if (!hostname) return httpServer(clientRequest, proxyResponse);
 
-  /* below for http(s) "request" proxy */
+  /* for http/https 'request' proxy */
   var isBySocks = allBySocks || isNeedProxy(hostname);
   var options = {
     agent  : isBySocks ? new socks.Agent({proxy: socksProxy}, false, false) : null,
@@ -251,7 +251,7 @@ var httpProxy = http.createServer()
     // transfer server response to proxy response
     serverResponse.pipe(proxyResponse);
   })
-  // for both noram/socks request error
+  // for both normal and socks request error
   .on('error', function(err) {
     log(`${isBySocks ? '*' : ' '} request XX: [${err.message}]: ${clientRequest.url}`);
 
@@ -274,13 +274,13 @@ var httpProxy = http.createServer()
 // head is buffer <Buffer>
 .on('connect', function(clientRequest, clientSocket, head) {
 
-  /* below for https "connect" proxy. */
+  /* for https 'connect' proxy */
   var { hostname, port } = url.parse(`https://${clientRequest.url}`);
   var isBySocks = allBySocks || isNeedProxy(hostname);
 
   log(`${isBySocks ? '*' : ' '} connect >>: ${clientRequest.url}`);
 
-  // for socks connection
+  // for socks 'connect'
   if (isBySocks) {
     var options = {
       proxy: socksProxy,
@@ -291,7 +291,7 @@ var httpProxy = http.createServer()
       timeout: socketTimeout
     };
     socks.createConnection(options, function(err, serverSocket, info) {
-      // socks proxy error, check socks proxy
+      // socks 'connect' proxy error
       if (err) {
         log(`* connect XX: [${err.message}]: ${clientRequest.url}`);
 
@@ -306,7 +306,7 @@ var httpProxy = http.createServer()
       connectPipe(clientSocket, serverSocket, head, isBySocks, clientRequest.url);
     });
   }
-  // for noraml connection
+  // for noraml 'connect'
   else {
     try {
       var serverSocket = net.createConnection(port, hostname, function() {
@@ -332,11 +332,11 @@ var httpProxy = http.createServer()
 });
 
 
-// set client timeout, same as below
+// set client socket timeout
 //httpProxy.timeout = socketTimeout;
 
 
-// listen exception without try catch
+// listen process uncaught exception event
 process.on('uncaughtException', function (err) {
   if (err.code === 'ECONNABORTED') {
     return;
