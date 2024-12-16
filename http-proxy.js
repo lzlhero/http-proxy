@@ -74,9 +74,9 @@ var checkSocksProxy = (function() {
 
     var socksAgent = new socksProxyAgent(socksProxyURI, { timeout: socketTimeout });
     http.get({
-      port    : 443,
-      host    : 'www.google.com',
-      agent   : socksAgent
+      port: 443,
+      host: 'www.google.com',
+      agent: socksAgent
     }, function(res) {
       enable();
     })
@@ -97,8 +97,8 @@ function purgeHeaders(rawHeaders) {
   for (var i = 0; i < rawHeaders.length; i = i + 2) {
     // remove non-ascii characters from header
     value = rawHeaders[i + 1].replace(/[^\x20-\x7E]+/g, '');
-    name  = rawHeaders[i];
-    type  = typeof headers[name];
+    name = rawHeaders[i];
+    type = typeof headers[name];
 
     if (type === 'undefined') {
       headers[name] = value;
@@ -223,9 +223,9 @@ var httpProxy = http.createServer()
   /* for http/https 'request' proxy */
   var isBySocks = allBySocks || isNeedProxy(hostname);
   var options = {
-    agent  : isBySocks ? new socksProxyAgent(socksProxyURI, { timeout: socketTimeout }) : null,
+    agent: isBySocks ? new socksProxyAgent(socksProxyURI, { timeout: socketTimeout }) : null,
     headers: purgeHeaders(clientRequest.rawHeaders),
-    method : clientRequest.method
+    method: clientRequest.method
   };
 
   // proxyRequest is client request stream <http.ClientRequest>
