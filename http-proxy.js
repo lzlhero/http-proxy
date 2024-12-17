@@ -9,14 +9,15 @@ var shell = require('child_process');
 var replace = require('stream-replace');
 var isNeedProxy = require('./proxy.pac');
 
-const socketTimeout = 10000;
-const allBySocks = false;
-const socksProxy = {
+/* MUST BE SOCKS5 PROXY ADDRESS */
+const socksConfig = {
   host: '127.0.0.1',
-  port: 8888,
-  type: 5
+  port: 8888
 };
-const socksProxyURI = `socks://${socksProxy.host}:${socksProxy.port}`;
+socksConfig.type = 5;
+const socksURI = `socks://${socksConfig.host}:${socksConfig.port}`;
+const allBySocks = false;
+const socketTimeout = 10000;
 
 
 // console log helper
@@ -72,7 +73,7 @@ var checkSocksProxy = (function() {
     if (disabled) return;
     disabled = true;
 
-    var socksAgent = new socksProxyAgent(socksProxyURI, { timeout: socketTimeout });
+    var socksAgent = new socksProxyAgent(socksURI, { timeout: socketTimeout });
     http.get({
       port: 443,
       host: 'www.google.com',
@@ -95,18 +96,23 @@ function purgeHeaders(rawHeaders) {
   var headers = {}, name, value, type;
 
   for (var i = 0; i < rawHeaders.length; i = i + 2) {
+    name = rawHeaders[i];
     // remove non-ascii characters from header
     value = rawHeaders[i + 1].replace(/[^\x20-\x7E]+/g, '');
-    name = rawHeaders[i];
-    type = typeof headers[name];
 
+    // add header by current header existing or not
+    type = typeof headers[name];
     if (type === 'undefined') {
       headers[name] = value;
     }
     else if (type === 'string') {
+      // build array structure
+      // headers[name]: 1st same name header
+      // value: 2nd same name header
       headers[name] = [headers[name], value];
     }
     else {
+      // value: 3rd(>=) same name header
       headers[name].push(value);
     }
   }
@@ -180,12 +186,6 @@ function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
     log(`${isBySocks ? '*' : ' '} connect <C: ${url}`);
     closeSocket(clientSocket);
   });
-  /*
-  serverSocket.setTimeout(socketTimeout, function() {
-    log(`${isBySocks ? '*' : ' '} connect <?: ${url}`);
-    closeSocket(clientSocket, serverSocket);
-  });
-  */
 
   // client socket closed events
   clientSocket
@@ -201,12 +201,6 @@ function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
     log(`${isBySocks ? '*' : ' '} connect >C: ${url}`);
     closeSocket(serverSocket);
   });
-  /*
-  clientSocket.setTimeout(socketTimeout, function() {
-    log(`${isBySocks ? '*' : ' '} connect >?: ${url}`);
-    closeSocket(clientSocket, serverSocket);
-  });
-  */
 }
 
 
@@ -215,15 +209,16 @@ var httpProxy = http.createServer()
 // clientRequest is client request message <http.IncomingMessage>
 // proxyResponse is server response stream <http.ServerResponse>
 .on('request', function(clientRequest, proxyResponse) {
+
   var { hostname, protocol } = url.parse(clientRequest.url);
 
-  /* for client 'request' directly without proxy */
+  /* directly without proxy */
   if (!hostname) return httpServer(clientRequest, proxyResponse);
 
   /* for http/https 'request' proxy */
   var isBySocks = allBySocks || isNeedProxy(hostname);
   var options = {
-    agent: isBySocks ? new socksProxyAgent(socksProxyURI, { timeout: socketTimeout }) : null,
+    agent: isBySocks ? new socksProxyAgent(socksURI, { timeout: socketTimeout }) : null,
     headers: purgeHeaders(clientRequest.rawHeaders),
     method: clientRequest.method
   };
@@ -285,7 +280,7 @@ var httpProxy = http.createServer()
   // for socks 'connect'
   if (isBySocks) {
     var options = {
-      proxy: socksProxy,
+      proxy: socksConfig,
       destination: {
         host: hostname,
         port: port
@@ -334,10 +329,6 @@ var httpProxy = http.createServer()
   var { address, port } = this.address();
   console.log(`HTTP Proxy${allBySocks ? ' all by socks' : ''} on ${address}:${port}`);
 });
-
-
-// set client socket timeout
-//httpProxy.timeout = socketTimeout;
 
 
 // listen process uncaught exception event
