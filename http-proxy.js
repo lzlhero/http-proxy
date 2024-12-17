@@ -218,7 +218,7 @@ var httpProxy = http.createServer()
   /* for http/https 'request' proxy */
   var isBySocks = allBySocks || isNeedProxy(hostname);
   var options = {
-    agent: isBySocks ? new socksProxyAgent(socksURI, { timeout: socketTimeout }) : null,
+    agent: isBySocks ? new socksProxyAgent(socksURI) : null,
     headers: purgeHeaders(clientRequest.rawHeaders),
     method: clientRequest.method
   };
@@ -240,12 +240,14 @@ var httpProxy = http.createServer()
     // server response end
     serverResponse.on('end', function() {
       log(`${isBySocks ? '*' : ' '} request <<: ${clientRequest.url}`);
-      // proxyRequest.socket and serverResponse.socket is equal.
-      closeSocket(proxyRequest.socket);
     });
 
     // transfer server response to proxy response
     serverResponse.pipe(proxyResponse);
+  })
+  .setTimeout(socketTimeout, function() {
+    // proxyRequest.socket equal serverResponse.socket
+    closeSocket(proxyRequest.socket);
   })
   // for both normal and socks request error
   .on('error', function(err) {
