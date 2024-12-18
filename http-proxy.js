@@ -175,7 +175,6 @@ function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
   // server socket closed events
   serverSocket
   .on('end', function() {
-    //log(`${isBySocks ? '*' : ' '} connect <-: ${url}`);
     closeSocket(clientSocket);
   })
   .on('error', function(err) {
@@ -190,7 +189,6 @@ function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
   // client socket closed events
   clientSocket
   .on('end', function() {
-    //log(`${isBySocks ? '*' : ' '} connect >-: ${url}`);
     closeSocket(serverSocket);
   })
   .on('error', function(err) {
@@ -215,7 +213,7 @@ var httpProxy = http.createServer()
   /* directly without proxy */
   if (!hostname) return httpServer(clientRequest, proxyResponse);
 
-  /* for http/https 'request' proxy */
+  /* http/https 'request' proxy */
   var isBySocks = allBySocks || isNeedProxy(hostname);
   var options = {
     agent: isBySocks ? new socksProxyAgent(socksURI) : null,
@@ -246,10 +244,12 @@ var httpProxy = http.createServer()
     serverResponse.pipe(proxyResponse);
   })
   .setTimeout(socketTimeout, function() {
+    log(`${isBySocks ? '*' : ' '} request <?: ${clientRequest.url}`);
+
     // proxyRequest.socket equal serverResponse.socket
     closeSocket(proxyRequest.socket);
   })
-  // for both normal and socks request error
+  // normal or socks proxy request error
   .on('error', function(err) {
     log(`${isBySocks ? '*' : ' '} request XX: [${err.message}]: ${clientRequest.url}`);
 
@@ -264,22 +264,23 @@ var httpProxy = http.createServer()
   });
 
   // transfer client request to proxy request
-  log(`${isBySocks ? '*' : ' '} request >>: ${clientRequest.url}`);
   clientRequest.pipe(proxyRequest);
+
+  log(`${isBySocks ? '*' : ' '} request >>: ${clientRequest.url}`);
 })
 // clientRequest is client request message <http.IncomingMessage>
 // clientSocket is client socket <net.Socket>
 // head is buffer <Buffer>
 .on('connect', function(clientRequest, clientSocket, head) {
 
-  /* for https 'connect' proxy */
+  /* https 'connect' proxy */
   var { hostname, port } = url.parse(`https://${clientRequest.url}`);
   port = parseInt(port, 10);
   var isBySocks = allBySocks || isNeedProxy(hostname);
 
   log(`${isBySocks ? '*' : ' '} connect >>: ${clientRequest.url}`);
 
-  // for socks 'connect'
+  // socks 'connect'
   if (isBySocks) {
     var options = {
       proxy: socksConfig,
@@ -307,7 +308,7 @@ var httpProxy = http.createServer()
       connectPipe(clientSocket, serverSocket, head, isBySocks, clientRequest.url);
     });
   }
-  // for noraml 'connect'
+  // noraml 'connect'
   else {
     try {
       var serverSocket = net.createConnection(port, hostname, function() {
