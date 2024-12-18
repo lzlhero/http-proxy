@@ -276,7 +276,7 @@ var httpProxy = http.createServer()
 
   /* https 'connect' proxy */
   var { hostname, port } = url.parse(`https://${clientRequest.url}`);
-  port = parseInt(port, 10);
+  port = parseInt(port, 10) || 443;
   var isBySocks = allBySocks || isNeedProxy(hostname);
 
   log(`${isBySocks ? '*' : ' '} connect >>: ${clientRequest.url}`);
