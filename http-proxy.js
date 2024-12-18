@@ -9,6 +9,7 @@ var shell = require('child_process');
 var replace = require('stream-replace');
 var isNeedProxy = require('./proxy.pac');
 
+
 /* MUST BE SOCKS5 PROXY ADDRESS */
 const socksConfig = {
   host: '127.0.0.1',
