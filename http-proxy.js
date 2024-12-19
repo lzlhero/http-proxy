@@ -200,6 +200,19 @@ function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
     log(`${isBySocks ? '*' : ' '} connect >C: ${url}`);
     closeSocket(serverSocket);
   });
+
+  // socks timeout control
+  if (isBySocks) {
+    serverSocket.setTimeout(socketTimeout, function() {
+      log(`${isBySocks ? '*' : ' '} connect <?: ${url}`);
+      closeSocket(clientSocket, serverSocket);
+    });
+
+    clientSocket.setTimeout(socketTimeout, function() {
+      log(`${isBySocks ? '*' : ' '} connect >?: ${url}`);
+      closeSocket(clientSocket, serverSocket);
+    });
+  }
 }
 
 
