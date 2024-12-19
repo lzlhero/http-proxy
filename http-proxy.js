@@ -16,7 +16,7 @@ const socksConfig = {
   port: 8888
 };
 socksConfig.type = 5;
-const socksURI = `socks://${socksConfig.host}:${socksConfig.port}`;
+const socksUri = `socks://${socksConfig.host}:${socksConfig.port}`;
 const allBySocks = false;
 const socketTimeout = 10000;
 
@@ -74,7 +74,7 @@ var checkSocksProxy = (function() {
     if (disabled) return;
     disabled = true;
 
-    var socksAgent = new socksProxyAgent(socksURI, { timeout: socketTimeout });
+    var socksAgent = new socksProxyAgent(socksUri, { timeout: socketTimeout });
     http.get({
       port: 443,
       host: 'www.google.com',
@@ -217,7 +217,7 @@ var httpProxy = http.createServer()
   /* http/https 'request' proxy */
   var isBySocks = allBySocks || isNeedProxy(hostname);
   var options = {
-    agent: isBySocks ? new socksProxyAgent(socksURI) : null,
+    agent: isBySocks ? new socksProxyAgent(socksUri) : null,
     headers: purgeHeaders(clientRequest.rawHeaders),
     method: clientRequest.method
   };
