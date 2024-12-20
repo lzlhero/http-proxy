@@ -94,12 +94,20 @@ var checkSocksProxy = (function() {
 
 // purge headers object from rawHeaders
 function purgeHeaders(rawHeaders) {
-  var headers = {}, name, value, type;
+  var headers = {}, name, lowerCaseName, value, type;
 
   for (var i = 0; i < rawHeaders.length; i = i + 2) {
     name = rawHeaders[i];
+    lowerCaseName = name.trim().toLowerCase();
+
+    // rewrite 'connection' header to 'close'
+    if (lowerCaseName === 'connection' || lowerCaseName === 'proxy-connection') {
+      value = 'close';
+    }
     // remove non-ascii characters from header
-    value = rawHeaders[i + 1].replace(/[^\x20-\x7E]+/g, '');
+    else {
+      value = rawHeaders[i + 1].replace(/[^\x20-\x7E]+/g, '');
+    }
 
     // add header by current header existing or not
     type = typeof headers[name];
@@ -201,15 +209,15 @@ function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
     closeSocket(serverSocket);
   });
 
-  // socks timeout control
+  // socks connect inactivity timeout
   if (isBySocks) {
     serverSocket.setTimeout(socketTimeout, function() {
-      log(`${isBySocks ? '*' : ' '} connect <?: ${url}`);
+      log(`* connect <?: ${url}`);
       closeSocket(clientSocket, serverSocket);
     });
 
     clientSocket.setTimeout(socketTimeout, function() {
-      log(`${isBySocks ? '*' : ' '} connect >?: ${url}`);
+      log(`* connect >?: ${url}`);
       closeSocket(clientSocket, serverSocket);
     });
   }
