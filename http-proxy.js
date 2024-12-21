@@ -238,7 +238,7 @@ var httpProxy = http.createServer()
   /* http/https 'request' proxy */
   var isBySocks = allBySocks || isNeedProxy(hostname);
   var options = {
-    agent: isBySocks ? new socksProxyAgent(socksUri) : null,
+    agent: isBySocks ? new socksProxyAgent(socksUri, { timeout: socketTimeout }) : null,
     headers: purgeHeaders(clientRequest.rawHeaders),
     method: clientRequest.method
   };
@@ -268,8 +268,9 @@ var httpProxy = http.createServer()
   .setTimeout(socketTimeout, function() {
     log(`${isBySocks ? '*' : ' '} request <?: ${clientRequest.url}`);
 
-    // proxyRequest.socket equal serverResponse.socket
+    // destroy proxyRequest and socket manually
     closeSocket(proxyRequest.socket);
+    proxyRequest.destroy();
   })
   // normal or socks proxy request error
   .on('error', function(err) {
