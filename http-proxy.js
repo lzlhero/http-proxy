@@ -240,14 +240,16 @@ var httpProxy = http.createServer()
   var options = {
     agent: isBySocks ? new socksProxyAgent(socksUri, { timeout: socketTimeout }) : null,
     headers: purgeHeaders(clientRequest.rawHeaders),
-    method: clientRequest.method
+    method: clientRequest.method,
+    timeout: socketTimeout
   };
 
   // proxyRequest is client request stream <http.ClientRequest>
   // serverResponse is server response message <http.IncomingMessage>
   var proxyRequest = (protocol === 'http:' ? http : https)
       .request(clientRequest.url, options, function(serverResponse) {
-    // transfer server code and headers to proxyResponse
+
+    // transfer server response code and headers to proxy response
     var headers = purgeHeaders(serverResponse.rawHeaders);
     try {
       proxyResponse.writeHead(serverResponse.statusCode, headers);
@@ -257,22 +259,32 @@ var httpProxy = http.createServer()
       console.dir(headers);
     }
 
+    serverResponse
     // server response end
-    serverResponse.on('end', function() {
+    .on('end', function() {
       log(`${isBySocks ? '*' : ' '} request <<: ${clientRequest.url}`);
+    })
+    // server response timeout
+    .setTimeout(socketTimeout, function() {
+      log(`${isBySocks ? '*' : ' '} request <?: ${clientRequest.url}`);
+
+      // destroy manually
+      proxyResponse.destroy();
+      serverResponse.destroy();
+      proxyRequest.destroy();
     });
 
-    // transfer server response to proxy response
+    // transfer server response body to proxy response
     serverResponse.pipe(proxyResponse);
   })
-  .setTimeout(socketTimeout, function() {
-    log(`${isBySocks ? '*' : ' '} request <?: ${clientRequest.url}`);
+  // proxy request timeout
+  .on('timeout', function() {
+    log(`${isBySocks ? '*' : ' '} request >?: ${clientRequest.url}`);
 
-    // destroy proxyRequest and socket manually
-    closeSocket(proxyRequest.socket);
+    // destroy manually
     proxyRequest.destroy();
   })
-  // normal or socks proxy request error
+  // proxy request error
   .on('error', function(err) {
     log(`${isBySocks ? '*' : ' '} request XX: [${err.message}]: ${clientRequest.url}`);
 
@@ -281,7 +293,7 @@ var httpProxy = http.createServer()
       checkSocksProxy(clientRequest.url);
     }
 
-    // destroy stream without socket FIN
+    // destroy manually
     proxyResponse.destroy();
     proxyRequest.destroy();
   });
