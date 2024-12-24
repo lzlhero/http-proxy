@@ -352,6 +352,8 @@ var httpProxy = http.createServer()
       });
     }
     catch (err) {
+      log(`  connect XX: [${err.message}]: ${clientRequest.url}`);
+
       closeSocket(clientSocket);
       return;
     }
