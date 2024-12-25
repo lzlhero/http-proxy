@@ -1,3 +1,7 @@
+/* MUST BE SOCKS5 PROXY HOST */
+var socksHost = "127.0.0.1";
+var socksPort = 8888;
+var allBySocks = false;
 var list = [
   "google",
   "g.co",
@@ -216,6 +220,8 @@ var isNeedProxy = (function() {
   list = null;
 
   return function(host) {
+    if (allBySocks) return true;
+
     var dot = host.length, domain;
 
     do {
@@ -233,10 +239,14 @@ var isNeedProxy = (function() {
 
 
 function FindProxyForURL(url, host) {
-  return isNeedProxy(host) ? "SOCKS 127.0.0.1:8888; DIRECT" : "DIRECT";
+  return isNeedProxy(host) ? ("SOCKS " + socksHost + ":" + socksPort + "; DIRECT") : "DIRECT";
 }
 
 
 if (typeof module !== "undefined") {
-  module.exports = isNeedProxy;
+  module.exports = {
+    "socksHost": socksHost,
+    "socksPort": socksPort,
+    "isNeedProxy": isNeedProxy
+  };
 }

@@ -1,24 +1,19 @@
-var fs = require('fs');
-var net = require('net');
-var url = require('url');
-var http = require('http');
-var https = require('https');
-var socksClient = require('socks').SocksClient;
-var socksProxyAgent = require('socks-proxy-agent').SocksProxyAgent;
-var shell = require('child_process');
-var replace = require('stream-replace');
-var isNeedProxy = require('./proxy.pac');
+const fs = require('fs');
+const shell = require('child_process');
+const net = require('net');
+const url = require('url');
+const http = require('http');
+const https = require('https');
+const socksClient = require('socks').SocksClient;
+const socksProxyAgent = require('socks-proxy-agent').SocksProxyAgent;
+const replace = require('stream-replace');
+const { socksHost, socksPort, isNeedProxy } = require('./proxy.pac');
 
 
-/* MUST BE SOCKS5 PROXY ADDRESS */
-const socksConfig = {
-  host: '127.0.0.1',
-  port: 8888
-};
-socksConfig.type = 5;
-const socksUri = `socks://${socksConfig.host}:${socksConfig.port}`;
-const allBySocks = false;
+// config values
 const socketTimeout = 10000;
+const socksConfig = { host: socksHost, port: socksPort, type: 5 };
+const socksUri = `socks://${socksHost}:${socksPort}`;
 
 
 // console log helper
@@ -142,7 +137,7 @@ function httpServer(req, res) {
     case '/':
       restartHttpProxy();
       res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end(`HTTP Proxy${allBySocks ? ' all by socks' : ''} has been reloaded.`);
+      res.end('HTTP Proxy has been reloaded.');
       break;
 
     case '/proxy.pac':
@@ -236,7 +231,7 @@ var httpProxy = http.createServer()
   if (!hostname) return httpServer(clientRequest, proxyResponse);
 
   /* http/https 'request' proxy */
-  var isBySocks = allBySocks || isNeedProxy(hostname);
+  var isBySocks = isNeedProxy(hostname);
   var options = {
     agent: isBySocks ? new socksProxyAgent(socksUri, { timeout: socketTimeout }) : null,
     headers: purgeHeaders(clientRequest.rawHeaders),
@@ -311,7 +306,7 @@ var httpProxy = http.createServer()
   /* https 'connect' proxy */
   var { hostname, port } = url.parse(`https://${clientRequest.url}`);
   port = parseInt(port, 10) || 443;
-  var isBySocks = allBySocks || isNeedProxy(hostname);
+  var isBySocks = isNeedProxy(hostname);
 
   log(`${isBySocks ? '*' : ' '} connect >>: ${clientRequest.url}`);
 
@@ -367,15 +362,16 @@ var httpProxy = http.createServer()
 })
 .listen(8080, '0.0.0.0', function() {
   var { address, port } = this.address();
-  console.log(`HTTP Proxy${allBySocks ? ' all by socks' : ''} on ${address}:${port}`);
+  console.log(`HTTP Proxy on ${address}:${port}`);
 });
 
 
 // listen process uncaught exception event
 process.on('uncaughtException', function (err) {
-  if (err.code === 'ECONNABORTED') {
+  var { code, message, stack } = err;
+  if (code === 'ECONNABORTED' || code === 'EHOSTUNREACH') {
     return;
   }
 
-  console.log(`uncaughtException.\ncode: ${err.code}\nmessage: ${err.message}\nstack: ${err.stack}`);
+  console.log(`Uncaught Exception Error\ncode: ${code}\nmessage: ${message}\nstack: ${stack}`);
 });
