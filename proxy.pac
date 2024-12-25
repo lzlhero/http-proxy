@@ -1,7 +1,7 @@
 /* MUST BE SOCKS5 PROXY HOST */
 var socksHost = "127.0.0.1";
 var socksPort = 8888;
-var allBySocks = false;
+var socksAll = false;
 var list = [
   "google",
   "g.co",
@@ -220,7 +220,7 @@ var isNeedProxy = (function() {
   list = null;
 
   return function(host) {
-    if (allBySocks) return true;
+    if (socksAll) return true;
 
     var dot = host.length, domain;
 
