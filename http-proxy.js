@@ -366,7 +366,7 @@ var httpProxy = http.createServer()
 });
 
 
-// listen process uncaught exception event
+// listen process uncaught exception error
 process.on('uncaughtException', function (err) {
   var { code, message, stack } = err;
   if (code === 'ECONNABORTED' || code === 'EHOSTUNREACH') {
