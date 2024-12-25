@@ -179,6 +179,13 @@ var list = [
   "1337x.to",
   "kknews.cc",
   "inty.news",
+  "secretchina.com",
+  "kanzhongguo.com",
+  "westca.com",
+  "comefromchina.com",
+  "cnd.org",
+  "minzhuzhongguo.org",
+  "renminbao.com",
 
   "pornhub.com",
   "phncdn.com",
