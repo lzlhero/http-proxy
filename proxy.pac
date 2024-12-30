@@ -95,6 +95,8 @@ var list = [
   "uptodown.com",
   "bbc.com",
   "bbci.co.uk",
+  "reuters.com",
+  "reutersagency.com",
   "botanwang.com",
   "bloomberg.com",
   "ftchinese.com",
