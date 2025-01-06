@@ -216,6 +216,7 @@ var list = [
   "missav.com",
   "pornwhite.com",
   "youjizz.com",
+  "xfree.com",
 ];
 
 
