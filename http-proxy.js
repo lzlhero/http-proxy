@@ -24,11 +24,11 @@ function log(...arg) {
 }
 
 
-// close socket resources
-function closeSocket() {
+// destroy socket resources
+function destroySocket() {
   for (var i = 0; i < arguments.length; i++) {
-    if (arguments[i].writable) {
-      arguments[i].end();
+    if (!arguments[i].destroyed) {
+      arguments[i].destroySoon();
     }
   }
 }
@@ -179,41 +179,41 @@ function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
   // server socket closed events
   serverSocket
   .on('end', function() {
-    closeSocket(clientSocket);
+    destroySocket(clientSocket);
   })
   .on('error', function(err) {
     log(`${isBySocks ? '*' : ' '} connect <X: [${err.message}] ${url}`);
-    closeSocket(clientSocket);
+    destroySocket(clientSocket);
   })
   .on('close', function() {
     log(`${isBySocks ? '*' : ' '} connect <C: ${url}`);
-    closeSocket(clientSocket);
+    destroySocket(clientSocket);
   });
 
   // client socket closed events
   clientSocket
   .on('end', function() {
-    closeSocket(serverSocket);
+    destroySocket(serverSocket);
   })
   .on('error', function(err) {
     log(`${isBySocks ? '*' : ' '} connect >X: [${err.message}] ${url}`);
-    closeSocket(serverSocket);
+    destroySocket(serverSocket);
   })
   .on('close', function() {
     log(`${isBySocks ? '*' : ' '} connect >C: ${url}`);
-    closeSocket(serverSocket);
+    destroySocket(serverSocket);
   });
 
   // socks connect inactivity timeout
   if (isBySocks) {
     serverSocket.setTimeout(socketTimeout, function() {
       log(`* connect <?: ${url}`);
-      closeSocket(clientSocket, serverSocket);
+      destroySocket(clientSocket, serverSocket);
     });
 
     clientSocket.setTimeout(socketTimeout, function() {
       log(`* connect >?: ${url}`);
-      closeSocket(clientSocket, serverSocket);
+      destroySocket(clientSocket, serverSocket);
     });
   }
 }
@@ -327,7 +327,7 @@ var httpProxy = http.createServer()
         log(`* connect XX: [${err.message}]: ${clientRequest.url}`);
 
         checkSocksProxy(clientRequest.url);
-        closeSocket(clientSocket);
+        destroySocket(clientSocket);
         return;
       }
 
@@ -349,7 +349,7 @@ var httpProxy = http.createServer()
     catch (err) {
       log(`  connect XX: [${err.message}]: ${clientRequest.url}`);
 
-      closeSocket(clientSocket);
+      destroySocket(clientSocket);
       return;
     }
 
@@ -358,7 +358,7 @@ var httpProxy = http.createServer()
   }
 })
 .on('clientError', function(err, clientSocket) {
-  closeSocket(clientSocket);
+  destroySocket(clientSocket);
 })
 .listen(8080, '0.0.0.0', function() {
   var { address, port } = this.address();
