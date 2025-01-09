@@ -179,29 +179,29 @@ function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
   // server socket closed events
   serverSocket
   .on('end', function() {
-    destroySocket(clientSocket);
+    destroySocket(clientSocket, serverSocket);
   })
   .on('error', function(err) {
     log(`${isBySocks ? '*' : ' '} connect <X: [${err.message}] ${url}`);
-    destroySocket(clientSocket);
+    destroySocket(clientSocket, serverSocket);
   })
   .on('close', function() {
     log(`${isBySocks ? '*' : ' '} connect <C: ${url}`);
-    destroySocket(clientSocket);
+    destroySocket(clientSocket, serverSocket);
   });
 
   // client socket closed events
   clientSocket
   .on('end', function() {
-    destroySocket(serverSocket);
+    destroySocket(serverSocket, clientSocket);
   })
   .on('error', function(err) {
     log(`${isBySocks ? '*' : ' '} connect >X: [${err.message}] ${url}`);
-    destroySocket(serverSocket);
+    destroySocket(serverSocket, clientSocket);
   })
   .on('close', function() {
     log(`${isBySocks ? '*' : ' '} connect >C: ${url}`);
-    destroySocket(serverSocket);
+    destroySocket(serverSocket, clientSocket);
   });
 
   // socks connect inactivity timeout
@@ -213,7 +213,7 @@ function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
 
     clientSocket.setTimeout(socketTimeout, function() {
       log(`* connect >?: ${url}`);
-      destroySocket(clientSocket, serverSocket);
+      destroySocket(serverSocket, clientSocket);
     });
   }
 }
