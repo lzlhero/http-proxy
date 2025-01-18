@@ -73,6 +73,9 @@ var list = [
   "tumblr.com",
   "mozilla.org",
   "godaddy.com",
+  "chatgpt.com",
+  "oaistatic.com",
+  "openai.com",
 
   "wikipedia.org",
   "wikimedia.org",
@@ -186,6 +189,7 @@ var list = [
   "cnd.org",
   "minzhuzhongguo.org",
   "renminbao.com",
+  "chineseinla.com",
 
   "pornhub.com",
   "phncdn.com",
