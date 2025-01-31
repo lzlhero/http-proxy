@@ -71,7 +71,6 @@ var list = [
   "yimg.com",
   "flickr.com",
   "tumblr.com",
-  "mozilla.org",
   "godaddy.com",
   "chatgpt.com",
   "oaistatic.com",
