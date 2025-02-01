@@ -189,6 +189,7 @@ var list = [
   "minzhuzhongguo.org",
   "renminbao.com",
   "chineseinla.com",
+  "archive.org",
 
   "pornhub.com",
   "phncdn.com",
@@ -241,6 +242,8 @@ var list = [
   "xcafe.com",
   "qorno.com",
   "hdtube.porn",
+  "onlyhentaistuff.com",
+  "jkv.app",
 ];
 
 
