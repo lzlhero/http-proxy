@@ -100,6 +100,7 @@ var list = [
   "quora.com",
   "uptodown.com",
   "bbc.com",
+  "bbc.co.uk",
   "bbci.co.uk",
   "reuters.com",
   "reutersagency.com",
