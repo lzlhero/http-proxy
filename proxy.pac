@@ -194,6 +194,9 @@ var list = [
   "renminbao.com",
   "chineseinla.com",
   "archive.org",
+  "sydneytoday.com",
+  "jinriaozhou.com",
+  "mediatodaygroup.com",
 
   "pornhub.com",
   "phncdn.com",
