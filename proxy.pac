@@ -75,6 +75,10 @@ var list = [
   "chatgpt.com",
   "oaistatic.com",
   "openai.com",
+  "line.me",
+  "line-apps.com",
+  "line-scdn.net",
+  "line.naver.jp",
 
   "wikipedia.org",
   "wikimedia.org",
