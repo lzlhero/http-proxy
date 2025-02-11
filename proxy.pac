@@ -1,6 +1,6 @@
 /* MUST BE SOCKS5 PROXY HOST */
 var socksHost = "127.0.0.1";
-var socksPort = 8888;
+var socksPort = 1080;
 var socksAll = false;
 var list = [
   "google",
