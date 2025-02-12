@@ -198,6 +198,7 @@ var list = [
   "sydneytoday.com",
   "jinriaozhou.com",
   "mediatodaygroup.com",
+  "jsdelivr.net",
 
   "pornhub.com",
   "phncdn.com",
