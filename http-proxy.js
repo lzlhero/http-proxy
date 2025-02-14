@@ -25,6 +25,17 @@ function log(...arg) {
 }
 
 
+// validate url string
+function isValidHttpUrl(url) {
+  try {
+    const object = new URL(url);
+    return object.protocol === 'http:' || object.protocol === 'https:';
+  } catch (err) {
+    return false;
+  }
+}
+
+
 // destroy socket resources
 function destroySocket() {
   for (var i = 0; i < arguments.length; i++) {
@@ -231,16 +242,15 @@ var httpProxy = http.createServer()
   /* directly without proxy */
   if (!hostname) return httpServer(clientRequest, proxyResponse);
 
-  // 'request' url validation
-  try {
-    new URL(clientRequest.url);
-  } catch (err) {
-    console.log(`new URL() error with: ${clientRequest.url}`);
+  /* http/https 'request' proxy */
+
+  // url must be valid
+  if (!isValidHttpUrl(clientRequest.url)) {
+    console.log(`invalid request with: ${clientRequest.url}`);
     proxyResponse.destroy();
     return;
   }
 
-  /* http/https 'request' proxy */
   var isBySocks = isNeedProxy(hostname);
   var options = {
     agent: isBySocks ? new socksProxyAgent(socksUri, { timeout: socketTimeout }) : null,
