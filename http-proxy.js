@@ -231,6 +231,15 @@ var httpProxy = http.createServer()
   /* directly without proxy */
   if (!hostname) return httpServer(clientRequest, proxyResponse);
 
+  // 'request' url validation
+  try {
+    new URL(clientRequest.url);
+  } catch (err) {
+    console.log(`new URL() error with: ${clientRequest.url}`);
+    proxyResponse.destroy();
+    return;
+  }
+
   /* http/https 'request' proxy */
   var isBySocks = isNeedProxy(hostname);
   var options = {
