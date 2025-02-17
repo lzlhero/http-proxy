@@ -198,7 +198,7 @@ function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
     destroySocket(clientSocket, serverSocket);
   })
   .on('close', function() {
-    log(`${isBySocks ? '*' : ' '} connect <C: ${url}`);
+    log(`${isBySocks ? '*' : ' '} connect <|: ${url}`);
     destroySocket(clientSocket, serverSocket);
   });
 
@@ -212,7 +212,7 @@ function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
     destroySocket(serverSocket, clientSocket);
   })
   .on('close', function() {
-    log(`${isBySocks ? '*' : ' '} connect >C: ${url}`);
+    log(`${isBySocks ? '*' : ' '} connect >|: ${url}`);
     destroySocket(serverSocket, clientSocket);
   });
 
