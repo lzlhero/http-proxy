@@ -201,6 +201,7 @@ var list = [
   "mediatodaygroup.com",
   "jsdelivr.net",
   "btdig.com",
+  "proton.me",
 
   "pornhub.com",
   "phncdn.com",
