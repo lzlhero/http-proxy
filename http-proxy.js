@@ -39,9 +39,10 @@ function isValidHttpUrl(url) {
 // destroy socket resources
 function destroySocket() {
   for (var i = 0; i < arguments.length; i++) {
-    if (!arguments[i].destroyed) {
-      arguments[i].destroySoon();
+    if (arguments[i].writable) {
+      arguments[i].end();
     }
+    arguments[i].destroy();
   }
 }
 
