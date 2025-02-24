@@ -202,6 +202,7 @@ var list = [
   "jsdelivr.net",
   "btdig.com",
   "proton.me",
+  "xiaomi.eu",
 
   "pornhub.com",
   "phncdn.com",
