@@ -42,7 +42,9 @@ function destroySocket() {
     if (arguments[i].writable) {
       arguments[i].end();
     }
-    arguments[i].destroy();
+    if (!arguments[i].destroyed) {
+      arguments[i].destroy();
+    }
   }
 }
 
