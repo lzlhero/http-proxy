@@ -99,6 +99,7 @@ var list = [
   "apkpure.net",
   "apkmonk.com",
   "apkcombo.com",
+  "apkflash.net",
   "apk4fun.com",
   "apkhere.com",
   "androidapksfree.com",
