@@ -191,45 +191,62 @@ function connectPipe(clientSocket, serverSocket, head, isBySocks, url) {
    clientSocket and serverSocket are sockets <net.Socket>
 */
 function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
-  // server socket closed events
-  serverSocket
-  .on('end', function() {
-    destroySocket(clientSocket, serverSocket);
-  })
-  .on('error', function(err) {
-    log(`${isBySocks ? '*' : ' '} connect <X: [${err.message}] ${url}`);
-    destroySocket(clientSocket, serverSocket);
-  })
-  .on('close', function() {
-    log(`${isBySocks ? '*' : ' '} connect <|: ${url}`);
-    destroySocket(clientSocket, serverSocket);
-  });
-
-  // client socket closed events
-  clientSocket
-  .on('end', function() {
-    destroySocket(serverSocket, clientSocket);
-  })
-  .on('error', function(err) {
-    log(`${isBySocks ? '*' : ' '} connect >X: [${err.message}] ${url}`);
-    destroySocket(serverSocket, clientSocket);
-  })
-  .on('close', function() {
+  function clientSocketEnd() {
+    removeListeners();
     log(`${isBySocks ? '*' : ' '} connect >|: ${url}`);
+    destroySocket(clientSocket, serverSocket);
+  }
+
+  function clientSocketError(err) {
+    removeListeners();
+    log(`${isBySocks ? '*' : ' '} connect >X: [${err.message}] ${url}`);
+    destroySocket(clientSocket, serverSocket);
+  }
+
+  function clientSocketTimeout() {
+    removeListeners();
+    log(`${isBySocks ? '*' : ' '} connect >?: ${url}`);
+    destroySocket(clientSocket, serverSocket);
+  }
+
+  function serverSocketEnd() {
+    removeListeners();
+    log(`${isBySocks ? '*' : ' '} connect <|: ${url}`);
     destroySocket(serverSocket, clientSocket);
-  });
+  }
 
-  // socks connect inactivity timeout
+  function serverSocketError(err) {
+    removeListeners();
+    log(`${isBySocks ? '*' : ' '} connect <X: [${err.message}] ${url}`);
+    destroySocket(serverSocket, clientSocket);
+  }
+
+  function serverSocketTimeout() {
+    removeListeners();
+    log(`${isBySocks ? '*' : ' '} connect <?: ${url}`);
+    destroySocket(serverSocket, clientSocket);
+  }
+
+  // remove event listeners
+  function removeListeners() {
+    clientSocket.removeListener('end', clientSocketEnd);
+    clientSocket.removeListener('error', clientSocketError);
+    serverSocket.removeListener('end', serverSocketEnd);
+    serverSocket.removeListener('error', serverSocketError);
+    if (isBySocks) {
+      clientSocket.removeListener('timeout', clientSocketTimeout);
+      serverSocket.removeListener('timeout', serverSocketTimeout);
+    }
+  }
+
+  // add event listeners
+  clientSocket.on('end', clientSocketEnd);
+  clientSocket.on('error', clientSocketError);
+  serverSocket.on('end', serverSocketEnd);
+  serverSocket.on('error', serverSocketError);
   if (isBySocks) {
-    serverSocket.setTimeout(socketTimeout, function() {
-      log(`* connect <?: ${url}`);
-      destroySocket(clientSocket, serverSocket);
-    });
-
-    clientSocket.setTimeout(socketTimeout, function() {
-      log(`* connect >?: ${url}`);
-      destroySocket(serverSocket, clientSocket);
-    });
+    clientSocket.setTimeout(socketTimeout, clientSocketTimeout);
+    serverSocket.setTimeout(socketTimeout, serverSocketTimeout);
   }
 }
 
