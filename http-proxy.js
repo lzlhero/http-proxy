@@ -182,7 +182,7 @@ function connectPipe(clientSocket, serverSocket, head, isBySocks, url) {
   serverSocket.pipe(clientSocket);
   clientSocket.pipe(serverSocket);
 
-  log(`${isBySocks ? '*' : ' '} connect <<: ${url}`);
+  log(`${isBySocks ? '*' : ' '} connect ==: ${url}`);
 }
 
 
@@ -193,37 +193,37 @@ function connectPipe(clientSocket, serverSocket, head, isBySocks, url) {
 function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
   function clientSocketEnd() {
     removeListeners();
-    log(`${isBySocks ? '*' : ' '} connect >|: ${url}`);
+    log(`${isBySocks ? '*' : ' '} connect |<: ${url}`);
     destroySocket(clientSocket, serverSocket);
   }
 
   function clientSocketError(err) {
     removeListeners();
-    log(`${isBySocks ? '*' : ' '} connect >X: [${err.message}] ${url}`);
+    log(`${isBySocks ? '*' : ' '} connect X<: [${err.message}] ${url}`);
     destroySocket(clientSocket, serverSocket);
   }
 
   function clientSocketTimeout() {
     removeListeners();
-    log(`${isBySocks ? '*' : ' '} connect >?: ${url}`);
+    log(`${isBySocks ? '*' : ' '} connect ?<: ${url}`);
     destroySocket(clientSocket, serverSocket);
   }
 
   function serverSocketEnd() {
     removeListeners();
-    log(`${isBySocks ? '*' : ' '} connect <|: ${url}`);
+    log(`${isBySocks ? '*' : ' '} connect >|: ${url}`);
     destroySocket(serverSocket, clientSocket);
   }
 
   function serverSocketError(err) {
     removeListeners();
-    log(`${isBySocks ? '*' : ' '} connect <X: [${err.message}] ${url}`);
+    log(`${isBySocks ? '*' : ' '} connect >X: [${err.message}] ${url}`);
     destroySocket(serverSocket, clientSocket);
   }
 
   function serverSocketTimeout() {
     removeListeners();
-    log(`${isBySocks ? '*' : ' '} connect <?: ${url}`);
+    log(`${isBySocks ? '*' : ' '} connect >?: ${url}`);
     destroySocket(serverSocket, clientSocket);
   }
 
@@ -279,6 +279,8 @@ var httpProxy = http.createServer()
     timeout: socketTimeout
   };
 
+  log(`${isBySocks ? '*' : ' '} request >>: ${clientRequest.url}`);
+
   // proxyRequest is client request stream <http.ClientRequest>
   // serverResponse is server response message <http.IncomingMessage>
   var proxyRequest = (protocol === 'http:' ? http : https)
@@ -314,7 +316,7 @@ var httpProxy = http.createServer()
   })
   // proxy request timeout
   .on('timeout', function() {
-    log(`${isBySocks ? '*' : ' '} request >?: ${clientRequest.url}`);
+    log(`${isBySocks ? '*' : ' '} request ?>: ${clientRequest.url}`);
 
     // destroy manually
     proxyRequest.destroy();
@@ -335,8 +337,6 @@ var httpProxy = http.createServer()
 
   // transfer client request to proxy request
   clientRequest.pipe(proxyRequest);
-
-  log(`${isBySocks ? '*' : ' '} request >>: ${clientRequest.url}`);
 })
 // clientRequest is client request message <http.IncomingMessage>
 // clientSocket is client socket <net.Socket>
@@ -353,8 +353,8 @@ var httpProxy = http.createServer()
 
   log(`${isBySocks ? '*' : ' '} connect >>: ${clientRequest.url}`);
 
-  // socks 'connect'
   if (isBySocks) {
+    // socks 'connect'
     var options = {
       proxy: socksConfig,
       destination: {
@@ -365,11 +365,13 @@ var httpProxy = http.createServer()
       timeout: socketTimeout
     };
     socksClient.createConnection(options, function(err, info) {
-      // socks 'connect' proxy error
       if (err) {
+        // socks 'connect' error
         log(`* connect XX: [${err.message}]: ${clientRequest.url}`);
 
+        // check socks proxy status
         checkSocksProxy(clientRequest.url);
+        // destroy client socket
         destroySocket(clientSocket);
         return;
       }
@@ -383,9 +385,9 @@ var httpProxy = http.createServer()
       connectPipe(clientSocket, serverSocket, head, isBySocks, clientRequest.url);
     });
   }
-  // normal 'connect'
   else {
     try {
+      // normal 'connect'
       var options = {
         host: hostname,
         port: port,
@@ -398,8 +400,10 @@ var httpProxy = http.createServer()
       });
     }
     catch (err) {
+      // normal 'connect' error
       log(`  connect XX: [${err.message}]: ${clientRequest.url}`);
 
+      // destroy client socket
       destroySocket(clientSocket);
       return;
     }
