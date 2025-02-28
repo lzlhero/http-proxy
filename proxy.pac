@@ -211,6 +211,10 @@ var list = [
   "btdig.com",
   "proton.me",
   "xiaomi.eu",
+  "pixnet.net",
+  "pixfs.net",
+  "pixnet.cc",
+  "pimg.tw",
 
   "pornhub.com",
   "phncdn.com",
