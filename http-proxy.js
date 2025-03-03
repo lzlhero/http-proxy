@@ -192,43 +192,37 @@ function connectPipe(clientSocket, serverSocket, head, isBySocks, url) {
 */
 function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
   function clientSocketEnd() {
-    removeListeners();
+    destroySockets();
     log(`${isBySocks ? '*' : ' '} connect |<: ${url}`);
-    destroySocket(clientSocket, serverSocket);
   }
 
   function clientSocketError(err) {
-    removeListeners();
+    destroySockets();
     log(`${isBySocks ? '*' : ' '} connect X<: [${err.message}] ${url}`);
-    destroySocket(clientSocket, serverSocket);
   }
 
   function clientSocketTimeout() {
-    removeListeners();
+    destroySockets();
     log(`${isBySocks ? '*' : ' '} connect ?<: ${url}`);
-    destroySocket(clientSocket, serverSocket);
   }
 
   function serverSocketEnd() {
-    removeListeners();
+    destroySockets();
     log(`${isBySocks ? '*' : ' '} connect >|: ${url}`);
-    destroySocket(serverSocket, clientSocket);
   }
 
   function serverSocketError(err) {
-    removeListeners();
+    destroySockets();
     log(`${isBySocks ? '*' : ' '} connect >X: [${err.message}] ${url}`);
-    destroySocket(serverSocket, clientSocket);
   }
 
   function serverSocketTimeout() {
-    removeListeners();
+    destroySockets();
     log(`${isBySocks ? '*' : ' '} connect >?: ${url}`);
-    destroySocket(serverSocket, clientSocket);
   }
 
-  // remove event listeners
-  function removeListeners() {
+  function destroySockets() {
+    // remove event listeners
     clientSocket.removeListener('end', clientSocketEnd);
     clientSocket.removeListener('error', clientSocketError);
     serverSocket.removeListener('end', serverSocketEnd);
@@ -237,6 +231,13 @@ function connectPipeEvents(clientSocket, serverSocket, isBySocks, url) {
       clientSocket.removeListener('timeout', clientSocketTimeout);
       serverSocket.removeListener('timeout', serverSocketTimeout);
     }
+
+    // unpipe sockets
+    clientSocket.unpipe(serverSocket);
+    serverSocket.unpipe(clientSocket);
+
+    // destroy client and server sockets
+    destroySocket(clientSocket, serverSocket);
   }
 
   // add event listeners
