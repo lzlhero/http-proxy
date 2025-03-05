@@ -23,6 +23,7 @@ var list = [
   "googlevideo.com",
   "googleapis.com",
   "googleblog.com",
+  "googlezip.net",
   "withgoogle.com",
   "appspot.com",
   "blogspot.com",
