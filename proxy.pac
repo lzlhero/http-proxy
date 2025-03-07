@@ -217,6 +217,8 @@ var list = [
   "pixfs.net",
   "pixnet.cc",
   "pimg.tw",
+  "mega.nz",
+  "mega.co.nz",
 
   "pornhub.com",
   "phncdn.com",
