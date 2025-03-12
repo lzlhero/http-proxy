@@ -222,6 +222,9 @@ var list = [
   "mega.co.nz",
   "sstatic.net",
   "gravatar.com",
+  "tiktok.com",
+  "tiktokv.com",
+  "tiktokcdn.com",
 
   "pornhub.com",
   "phncdn.com",
