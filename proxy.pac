@@ -227,6 +227,7 @@ var list = [
   "tiktokcdn.com",
   "hostloc.com",
   "xposed.info",
+  "worldjournal.com",
 
   "pornhub.com",
   "phncdn.com",
