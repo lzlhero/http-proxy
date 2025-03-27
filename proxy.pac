@@ -282,6 +282,12 @@ var list = [
   "hdtube.porn",
   "onlyhentaistuff.com",
   "jkv.app",
+  "babesrater.com",
+  "pictoa.com",
+  "celebgate.org",
+  "imperiodefamosas.com",
+  "saatchiart.com",
+  "porndig.com",
 ];
 
 

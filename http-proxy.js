@@ -12,7 +12,7 @@ const { socksHost, socksPort, isNeedProxy } = require('./proxy.pac');
 
 // config values
 const socketKeepIdle = 60000;
-const socketTimeout = 10000;
+const socketTimeout = 30000;
 const socksConfig = { host: socksHost, port: socksPort, type: 5 };
 const socksUri = `socks://${socksHost}:${socksPort}`;
 
