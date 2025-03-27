@@ -288,6 +288,7 @@ var list = [
   "imperiodefamosas.com",
   "saatchiart.com",
   "porndig.com",
+  "fapello.com",
 ];
 
 
