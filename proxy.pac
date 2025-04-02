@@ -289,6 +289,21 @@ var list = [
   "saatchiart.com",
   "porndig.com",
   "fapello.com",
+  "curvyerotic.com",
+  "babepedia.com",
+  "playboyplus.com",
+  "luscious.net",
+  "nudems.com",
+  "morazzia.com",
+  "tnaflix.com",
+  "heroero.com",
+  "gettyimages.co.nz",
+  "foxhq.com",
+  "dailymail.co.uk",
+  "bidsquare.com",
+  "saddlegirls.com",
+  "sexpicturespass.com",
+  "tubezzz.net",
 ];
 
 
