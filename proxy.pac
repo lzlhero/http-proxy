@@ -304,6 +304,8 @@ var list = [
   "saddlegirls.com",
   "sexpicturespass.com",
   "tubezzz.net",
+  "snow-plus.net",
+  "allcinema.net",
 ];
 
 
