@@ -228,6 +228,7 @@ var list = [
   "hostloc.com",
   "xposed.info",
   "worldjournal.com",
+  "xijinping.one",
 
   "pornhub.com",
   "phncdn.com",
