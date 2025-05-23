@@ -308,6 +308,7 @@ var list = [
   "snow-plus.net",
   "allcinema.net",
   "thefappening.pro",
+  "fineartamerica.com",
 ];
 
 
