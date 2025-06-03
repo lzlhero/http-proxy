@@ -309,6 +309,7 @@ var list = [
   "allcinema.net",
   "thefappening.pro",
   "fineartamerica.com",
+  "1anime.me",
 ];
 
 
