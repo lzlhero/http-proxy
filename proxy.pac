@@ -229,6 +229,7 @@ var list = [
   "xposed.info",
   "worldjournal.com",
   "xijinping.one",
+  "marxists.org",
 
   "pornhub.com",
   "phncdn.com",
