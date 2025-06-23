@@ -36,6 +36,7 @@ var list = [
   "2mdn.net",
   "youtube-nocookie.com",
   "alphagoteach.deepmind.com",
+  "go.dev",
   "golang.org",
   "bing.com",
   "bing.net",
