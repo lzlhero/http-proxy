@@ -82,6 +82,8 @@ var list = [
   "line-apps.com",
   "line-scdn.net",
   "line.naver.jp",
+  "x.ai",
+  "grok.com",
 
   "wikipedia.org",
   "wikimedia.org",
