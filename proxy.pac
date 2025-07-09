@@ -315,6 +315,7 @@ var list = [
   "fineartamerica.com",
   "1anime.me",
   "saradahentai.com",
+  "hentai-moon.com",
 ];
 
 
