@@ -51,7 +51,7 @@ function destroySocket() {
 
 // restart http proxy by shell script
 function restartHttpProxy() {
-  shell.exec('proxy', function(err, stdout, stderr) {
+  shell.exec('http-proxy', function(err, stdout, stderr) {
     if(err) {
       console.log(`proxy error: ${stderr.trim()}`);
     }
