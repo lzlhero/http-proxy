@@ -53,7 +53,7 @@ function destroySocket() {
 function restartHttpProxy() {
   shell.exec('http-proxy', function(err, stdout, stderr) {
     if(err) {
-      console.log(`proxy error: ${stderr.trim()}`);
+      console.log(`http-proxy error: ${stderr.trim()}`);
     }
   });
 }
