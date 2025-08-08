@@ -236,6 +236,8 @@ var list = [
   "yhg007.com",
   "dailymotion.com",
   "dmcdn.net",
+  "4kvm.net",
+  "4kvm.tv",
 
   "pornhub.com",
   "phncdn.com",
