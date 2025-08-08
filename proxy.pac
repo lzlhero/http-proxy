@@ -234,6 +234,8 @@ var list = [
   "xijinping.one",
   "marxists.org",
   "yhg007.com",
+  "dailymotion.com",
+  "dmcdn.net",
 
   "pornhub.com",
   "phncdn.com",
