@@ -238,6 +238,7 @@ var list = [
   "dmcdn.net",
   "4kvm.net",
   "4kvm.tv",
+  "dytt8899.com",
 
   "pornhub.com",
   "phncdn.com",
