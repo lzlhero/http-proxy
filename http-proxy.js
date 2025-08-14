@@ -61,7 +61,7 @@ function restartHttpProxy() {
 // restart socks proxy by shell script
 function restartSocksProxy() {
   shell.exec('socks-proxy', function(err, stdout, stderr) {
-    console.log(`socks-proxy: ${err ? stderr.trim() : 'executed.'}`);
+    console.log(`socks-proxy: ${err ? stderr.trim() : 'restarted'}`);
   });
 }
 
