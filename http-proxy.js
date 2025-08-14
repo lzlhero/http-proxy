@@ -52,9 +52,8 @@ function destroySocket() {
 // restart http proxy by shell script
 function restartHttpProxy() {
   shell.exec('http-proxy', function(err, stdout, stderr) {
-    if(err) {
-      console.log(`http-proxy error: ${stderr.trim()}`);
-    }
+    // only be executed with http-proxy failure
+    console.log(`http-proxy: ${stderr.trim()}`);
   });
 }
 
@@ -62,9 +61,7 @@ function restartHttpProxy() {
 // restart socks proxy by shell script
 function restartSocksProxy() {
   shell.exec('socks-proxy', function(err, stdout, stderr) {
-    if(err) {
-      console.log(`socks-proxy error: ${stderr.trim()}`);
-    }
+    console.log(`socks-proxy: ${err ? stderr.trim() : 'executed.'}`);
   });
 }
 
