@@ -334,6 +334,11 @@ var list = [
   "1anime.me",
   "saradahentai.com",
   "hentai-moon.com",
+  "fleshbot.com",
+  "cdn.live",
+  "gate.cc",
+  "celebsunmasked.com",
+  "videocelebs.net",
 ];
 
 
