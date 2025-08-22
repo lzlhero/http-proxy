@@ -251,6 +251,12 @@ var list = [
   "btcc.com",
   "kucoin.com",
   "kucoin.plus",
+  "hk01.com",
+  "sinchew.com.my",
+  "ettoday.net",
+  "singtao.ca",
+  "singtaousa.com",
+  "guangming.com.my",
 
   "pornhub.com",
   "phncdn.com",
