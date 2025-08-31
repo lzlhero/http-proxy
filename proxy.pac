@@ -257,6 +257,7 @@ var list = [
   "singtao.ca",
   "singtaousa.com",
   "guangming.com.my",
+  "xiaoyakankan.com",
 
   "pornhub.com",
   "phncdn.com",
