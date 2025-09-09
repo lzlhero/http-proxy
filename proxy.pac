@@ -88,6 +88,7 @@ var list = [
   "wikipedia.org",
   "wikimedia.org",
   "wikileaks.org",
+  "stackoverflow.com",
   "v2ex.com",
   "vimeo.com",
   "vine.co",
