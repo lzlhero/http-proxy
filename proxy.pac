@@ -259,6 +259,8 @@ var list = [
   "singtaousa.com",
   "guangming.com.my",
   "xiaoyakankan.com",
+  "xiaoyakankan.tv",
+  "youknow.tv",
 
   "pornhub.com",
   "phncdn.com",
