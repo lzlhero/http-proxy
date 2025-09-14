@@ -36,6 +36,28 @@ function isValidHttpUrl(url) {
 }
 
 
+// validate http header name
+function isValidHeaderName(name) {
+  try {
+    http.validateHeaderName(name);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+
+// validate http header value
+function isValidHeaderValue(value) {
+  try {
+    http.validateHeaderValue('', value);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+
 // destroy socket resources
 function destroySocket() {
   for (var i = 0; i < arguments.length; i++) {
@@ -105,15 +127,16 @@ function purgeHeaders(rawHeaders) {
 
   for (var i = 0; i < rawHeaders.length; i = i + 2) {
     name = rawHeaders[i];
-    lowerCaseName = name.trim().toLowerCase();
+    value = rawHeaders[i + 1];
+    // skip illegal header name and value
+    if (!isValidHeaderName(name) || !isValidHeaderValue(value)) {
+      continue;
+    }
 
     // rewrite 'connection' header to 'close'
+    lowerCaseName = name.trim().toLowerCase();
     if (lowerCaseName === 'connection' || lowerCaseName === 'proxy-connection') {
       value = 'close';
-    }
-    // remove non-ascii characters from header
-    else {
-      value = rawHeaders[i + 1].replace(/[^\x20-\x7E]+/g, '');
     }
 
     // add header by current header existing or not
@@ -285,14 +308,7 @@ var httpProxy = http.createServer()
       .request(clientRequest.url, options, function(serverResponse) {
 
     // transfer server response code and headers to proxy response
-    var headers = purgeHeaders(serverResponse.rawHeaders);
-    try {
-      proxyResponse.writeHead(serverResponse.statusCode, headers);
-    }
-    catch (err) {
-      console.log(`writeHead() error with: ${clientRequest.url}`);
-      console.dir(headers);
-    }
+    proxyResponse.writeHead(serverResponse.statusCode, purgeHeaders(serverResponse.rawHeaders));
 
     serverResponse
     // server response end
