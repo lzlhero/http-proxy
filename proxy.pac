@@ -261,6 +261,9 @@ var list = [
   "xiaoyakankan.com",
   "xiaoyakankan.tv",
   "youknow.tv",
+  "greasyfork.org",
+  "kedou.life",
+  "proxysite.com",
 
   "pornhub.com",
   "phncdn.com",
