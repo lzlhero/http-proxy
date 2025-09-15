@@ -111,7 +111,6 @@ var list = [
   "apkhere.com",
   "androidapksfree.com",
   "aptoide.com",
-  "happymod.com",
   "ycombinator.com",
   "quora.com",
   "uptodown.com",
