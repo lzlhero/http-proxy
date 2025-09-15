@@ -134,7 +134,7 @@ function purgeHeaders(rawHeaders) {
     }
 
     // rewrite 'connection' header to 'close'
-    lowerCaseName = name.trim().toLowerCase();
+    lowerCaseName = name.toLowerCase();
     if (lowerCaseName === 'connection' || lowerCaseName === 'proxy-connection') {
       value = 'close';
     }
