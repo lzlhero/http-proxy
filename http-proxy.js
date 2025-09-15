@@ -123,7 +123,7 @@ var checkSocksProxy = (function() {
 
 // purge headers object from rawHeaders
 function purgeHeaders(rawHeaders) {
-  var headers = {}, name, lowerCaseName, value, type;
+  var headers = {}, name, value, lowerCaseName, type;
 
   for (var i = 0; i < rawHeaders.length; i = i + 2) {
     name = rawHeaders[i];
