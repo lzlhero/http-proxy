@@ -123,19 +123,21 @@ var checkSocksProxy = (function() {
 
 // purge headers object from rawHeaders
 function purgeHeaders(rawHeaders) {
-  var headers = {}, name, value, lowerCaseName, type;
+  var headers = {}, name, lcName, value, type;
 
   for (var i = 0; i < rawHeaders.length; i = i + 2) {
     name = rawHeaders[i];
+    lcName = name.toLowerCase();
     value = rawHeaders[i + 1];
-    // skip illegal header name and value
-    if (!isValidHeaderName(name) || !isValidHeaderValue(value)) {
+    // skip some headers
+    if (lcName === 'keep-alive' ||
+      !isValidHeaderName(name) ||
+      !isValidHeaderValue(value)) {
       continue;
     }
 
     // rewrite 'connection' header to 'close'
-    lowerCaseName = name.toLowerCase();
-    if (lowerCaseName === 'connection' || lowerCaseName === 'proxy-connection') {
+    if (lcName === 'connection') {
       value = 'close';
     }
 
