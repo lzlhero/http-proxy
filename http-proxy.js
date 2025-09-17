@@ -130,8 +130,7 @@ function purgeHeaders(rawHeaders) {
     lcName = name.toLowerCase();
     value = rawHeaders[i + 1];
     // skip some headers
-    if (lcName === 'keep-alive' ||
-      !isValidHeaderName(name) ||
+    if (!isValidHeaderName(name) ||
       !isValidHeaderValue(value)) {
       continue;
     }
