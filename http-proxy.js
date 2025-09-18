@@ -123,7 +123,7 @@ var checkSocksProxy = (function() {
 
 // purge headers object from rawHeaders
 function purgeHeaders(rawHeaders) {
-  var headers = {}, name, value, lcName, type;
+  var headers = {}, name, value, type;
 
   for (var i = 0; i < rawHeaders.length; i = i + 2) {
     name = rawHeaders[i];
@@ -134,10 +134,8 @@ function purgeHeaders(rawHeaders) {
       continue;
     }
 
-    lcName = name.toLowerCase();
-
     // rewrite 'connection' header to 'close'
-    if (lcName === 'connection') {
+    if (name.toLowerCase() === 'connection') {
       value = 'close';
     }
 
