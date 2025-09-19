@@ -351,6 +351,8 @@ var list = [
   "gate.cc",
   "celebsunmasked.com",
   "videocelebs.net",
+  "upskirt.tv",
+  "hotzxgirl.com",
 ];
 
 
