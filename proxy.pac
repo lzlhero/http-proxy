@@ -197,7 +197,6 @@ var list = [
   "pinterest.com",
   "pinimg.com",
   "proxifier.com",
-  "fineproxy.org",
   "1337x.to",
   "kknews.cc",
   "inty.news",
@@ -262,7 +261,6 @@ var list = [
   "youknow.tv",
   "greasyfork.org",
   "kedou.life",
-  "proxysite.com",
 
   "pornhub.com",
   "phncdn.com",
