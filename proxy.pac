@@ -352,7 +352,6 @@ var list = [
   "celebsunmasked.com",
   "videocelebs.net",
   "upskirt.tv",
-  "hotzxgirl.com",
 ];
 
 
