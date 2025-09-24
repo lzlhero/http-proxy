@@ -261,6 +261,7 @@ var list = [
   "youknow.tv",
   "greasyfork.org",
   "kedou.life",
+  "threads.com",
 
   "pornhub.com",
   "phncdn.com",
