@@ -43,6 +43,7 @@ var list = [
   "github.com",
   "github.io",
   "github.blog",
+  "githubassets.com",
   "githubusercontent.com",
   "facebook.com",
   "facebook.net",
