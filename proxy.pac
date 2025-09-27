@@ -76,6 +76,7 @@ var list = [
   "flickr.com",
   "tumblr.com",
   "godaddy.com",
+  "wsimg.com",
   "chatgpt.com",
   "oaistatic.com",
   "openai.com",
@@ -263,6 +264,7 @@ var list = [
   "greasyfork.org",
   "kedou.life",
   "threads.com",
+  "ausmis.com",
 
   "pornhub.com",
   "phncdn.com",
