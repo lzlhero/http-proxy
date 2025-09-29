@@ -267,7 +267,6 @@ var list = [
   "threads.com",
   "ausmis.com",
   "bangumi.tv",
-  "jiedm.com",
   "fluidplayer.com",
 
   "pornhub.com",
@@ -358,6 +357,7 @@ var list = [
   "celebsunmasked.com",
   "videocelebs.net",
   "upskirt.tv",
+  "jiedm.com",
 ];
 
 
