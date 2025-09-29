@@ -96,6 +96,7 @@ var list = [
   "vine.co",
   "kej.tw",
   "s3.amazonaws.com",
+  "amazon.co.jp",
   "w3schools.com",
   "substack.com",
   "medium.com",
@@ -265,6 +266,9 @@ var list = [
   "kedou.life",
   "threads.com",
   "ausmis.com",
+  "bangumi.tv",
+  "jiedm.com",
+  "fluidplayer.com",
 
   "pornhub.com",
   "phncdn.com",
