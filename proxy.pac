@@ -358,6 +358,7 @@ var list = [
   "videocelebs.net",
   "upskirt.tv",
   "jiedm.com",
+  "hanime.tv",
 ];
 
 
