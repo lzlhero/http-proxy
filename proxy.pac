@@ -86,6 +86,7 @@ var list = [
   "line.naver.jp",
   "x.ai",
   "grok.com",
+  "termux.dev",
 
   "wikipedia.org",
   "wikimedia.org",
