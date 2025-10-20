@@ -378,7 +378,7 @@ var httpProxy = http.createServer()
       command: 'connect',
       timeout: socketTimeout
     };
-    socksClient.createConnection(options, function(err, info) {
+    socksClient.createConnection(options, function(err, { socket: serverSocket } = {}) {
       if (err) {
         // socks 'connect' error
         log(`* connect XX: [${err.message}]: ${clientRequest.url}`);
@@ -390,7 +390,6 @@ var httpProxy = http.createServer()
         return;
       }
 
-      var serverSocket = info.socket;
       // set server socket keep idle time
       serverSocket.setKeepAlive(true, socketKeepIdle);
       // listen 'connect' sockets events
