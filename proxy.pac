@@ -270,6 +270,7 @@ var list = [
   "bangumi.tv",
   "fluidplayer.com",
   "viralcham.com",
+  "eyny.com",
 
   "pornhub.com",
   "phncdn.com",
