@@ -272,6 +272,7 @@ var list = [
   "viralcham.com",
   "eyny.com",
   "ikanbot.com",
+  "aikanbot.com",
 
   "pornhub.com",
   "phncdn.com",
