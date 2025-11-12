@@ -273,6 +273,8 @@ var list = [
   "eyny.com",
   "ikanbot.com",
   "aikanbot.com",
+  "huaren.us",
+  "upmedia.mg",
 
   "pornhub.com",
   "phncdn.com",
