@@ -275,6 +275,7 @@ var list = [
   "aikanbot.com",
   "huaren.us",
   "upmedia.mg",
+  "nirsoft.net",
 
   "pornhub.com",
   "phncdn.com",
