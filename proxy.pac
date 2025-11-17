@@ -368,6 +368,8 @@ var list = [
   "upskirt.tv",
   "jiedm.com",
   "hanime.tv",
+  "sis001.com",
+  "sisurl.com",
 ];
 
 
