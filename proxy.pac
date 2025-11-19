@@ -380,6 +380,7 @@ var list = [
   "hanime.tv",
   "sis001.com",
   "sisurl.com",
+  "haho.moe",
 ];
 
 
