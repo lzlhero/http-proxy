@@ -287,6 +287,7 @@ var list = [
   "huaren.us",
   "upmedia.mg",
   "nirsoft.net",
+  "capgeox.org",
 
   "pornhub.com",
   "phncdn.com",
