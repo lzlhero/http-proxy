@@ -290,6 +290,7 @@ var list = [
   "nirsoft.net",
   "capgeox.org",
   "suno.com",
+  "soundofhope.org",
 
   "pornhub.com",
   "phncdn.com",
