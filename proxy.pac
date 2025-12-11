@@ -88,6 +88,7 @@ var list = [
   "x.ai",
   "grok.com",
   "termux.dev",
+  "mozilla.org",
 
   "wikipedia.org",
   "wikimedia.org",
