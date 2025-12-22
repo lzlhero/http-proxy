@@ -292,6 +292,7 @@ var list = [
   "capgeox.org",
   "suno.com",
   "soundofhope.org",
+  "torrentkitty.net",
 
   "pornhub.com",
   "phncdn.com",
