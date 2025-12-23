@@ -293,6 +293,7 @@ var list = [
   "suno.com",
   "soundofhope.org",
   "torrentkitty.net",
+  "daum.net",
 
   "pornhub.com",
   "phncdn.com",
