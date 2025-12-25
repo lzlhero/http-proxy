@@ -296,6 +296,8 @@ var list = [
   "torrentkitty.net",
   "daum.net",
   "videohelp.com",
+  "qbittorrent.org",
+  "utorrent.com",
 
   "pornhub.com",
   "phncdn.com",
