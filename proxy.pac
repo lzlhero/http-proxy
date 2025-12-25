@@ -295,6 +295,7 @@ var list = [
   "soundofhope.org",
   "torrentkitty.net",
   "daum.net",
+  "videohelp.com",
 
   "pornhub.com",
   "phncdn.com",
