@@ -90,6 +90,7 @@ var list = [
   "grokipedia.com",
   "termux.dev",
   "mozilla.org",
+  "mozilla.net",
 
   "wikipedia.org",
   "wikimedia.org",
