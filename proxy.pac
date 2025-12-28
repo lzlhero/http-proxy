@@ -393,6 +393,7 @@ var list = [
   "sis001.com",
   "sisurl.com",
   "haho.moe",
+  "xxbrits.com",
 ];
 
 
