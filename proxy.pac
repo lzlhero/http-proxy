@@ -394,6 +394,16 @@ var list = [
   "sisurl.com",
   "haho.moe",
   "xxbrits.com",
+  "simply-hentai.com",
+  "donmai.us",
+  "yande.re",
+  "gelbooru.com",
+  "rule34.us",
+  "hentaipaw.com",
+  "hentaihand.com",
+  "ddd-smart.net",
+  "doujinnomori.com",
+  "wnacg.com",
 ];
 
 
