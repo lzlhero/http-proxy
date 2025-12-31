@@ -91,6 +91,7 @@ var list = [
   "termux.dev",
   "mozilla.org",
   "mozilla.net",
+  "claude.ai",
 
   "wikipedia.org",
   "wikimedia.org",
