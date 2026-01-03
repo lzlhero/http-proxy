@@ -300,6 +300,7 @@ var list = [
   "videohelp.com",
   "qbittorrent.org",
   "utorrent.com",
+  "ext.to",
 
   "pornhub.com",
   "phncdn.com",
