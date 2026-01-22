@@ -301,6 +301,7 @@ var list = [
   "qbittorrent.org",
   "utorrent.com",
   "ext.to",
+  "linux.do",
 
   "pornhub.com",
   "phncdn.com",
