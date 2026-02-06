@@ -124,6 +124,7 @@ var list = [
   "ycombinator.com",
   "quora.com",
   "uptodown.com",
+  "uptodown.net",
   "bbc.com",
   "bbc.co.uk",
   "bbci.co.uk",
