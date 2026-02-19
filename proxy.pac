@@ -303,6 +303,7 @@ var list = [
   "utorrent.com",
   "ext.to",
   "linux.do",
+  "doosho.com",
 
   "pornhub.com",
   "phncdn.com",
