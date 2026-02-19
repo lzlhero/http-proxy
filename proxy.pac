@@ -304,6 +304,7 @@ var list = [
   "ext.to",
   "linux.do",
   "doosho.com",
+  "overdrive.com",
 
   "pornhub.com",
   "phncdn.com",
