@@ -306,6 +306,7 @@ var list = [
   "doosho.com",
   "overdrive.com",
   "abc.net.au",
+  "kanzhongguo.eu",
 
   "pornhub.com",
   "phncdn.com",
