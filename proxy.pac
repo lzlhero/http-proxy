@@ -307,6 +307,8 @@ var list = [
   "overdrive.com",
   "abc.net.au",
   "kanzhongguo.eu",
+  "scribd.com",
+  "scribdassets.com",
 
   "pornhub.com",
   "phncdn.com",
