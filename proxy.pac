@@ -12,6 +12,7 @@ var list = [
   "google.com.hk",
   "google.co.jp",
   "google.ae",
+  "google.ca",
   "gmail.com",
   "android.com",
   "gvt1.com",
@@ -309,6 +310,7 @@ var list = [
   "kanzhongguo.eu",
   "scribd.com",
   "scribdassets.com",
+  "vansky.com",
 
   "pornhub.com",
   "phncdn.com",
