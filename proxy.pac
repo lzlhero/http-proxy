@@ -311,6 +311,7 @@ var list = [
   "scribd.com",
   "scribdassets.com",
   "vansky.com",
+  "thepiratebay.org",
 
   "pornhub.com",
   "phncdn.com",
