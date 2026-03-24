@@ -418,6 +418,7 @@ var list = [
   "ddd-smart.net",
   "doujinnomori.com",
   "wnacg.com",
+  "onlyfans.com",
 ];
 
 
