@@ -10,5 +10,7 @@
   "log_date_format" : "YYYY-MM-DD HH:mm:ss",
   "env": {
     "NODE_ENV": "production"
-  }
+  },
+  "watch": ["proxy.pac"],
+  "watch_delay": 1000
 }]
