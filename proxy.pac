@@ -313,6 +313,7 @@ var list = [
   "vansky.com",
   "thepiratebay.org",
   "huggingface.co",
+  "moltbook.com",
 
   "pornhub.com",
   "phncdn.com",
