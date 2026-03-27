@@ -430,7 +430,6 @@ var list = [
   "drtuber.com",
   "e-hentai.org",
   "dlsite.com",
-  "dlsite.jp",
 ];
 
 
