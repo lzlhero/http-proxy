@@ -314,6 +314,7 @@ var list = [
   "thepiratebay.org",
   "huggingface.co",
   "moltbook.com",
+  "netflix.com",
 
   "pornhub.com",
   "phncdn.com",

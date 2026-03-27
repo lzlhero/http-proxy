@@ -12,5 +12,5 @@
     "NODE_ENV": "production"
   },
   "watch": ["proxy.pac"],
-  "watch_delay": 1000
+  "watch_delay": 500
 }]
