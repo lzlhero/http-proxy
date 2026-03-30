@@ -319,6 +319,7 @@ var list = [
   "wikiversity.org",
   "theguardian.com",
   "scratch.mit.edu",
+  "gitbook.io",
 
   "pornhub.com",
   "phncdn.com",
