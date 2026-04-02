@@ -320,6 +320,7 @@ var list = [
   "theguardian.com",
   "scratch.mit.edu",
   "gitbook.io",
+  "myggpark.com",
 
   "pornhub.com",
   "phncdn.com",
